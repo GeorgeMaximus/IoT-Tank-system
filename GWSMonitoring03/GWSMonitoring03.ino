@@ -125,6 +125,16 @@ int msgs_cloud = 1;
 int msgs_card = 0 ;
 int msgs_sensors = 0;
 
+// CSV Structure and variables to be stored in the SD Card
+//char charRead;
+char dataStr[100] = "";
+char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure"; // for the CSV for data logger
+
+char statusRec[100] = "";
+char statusStr[100] = "Time ,SD card  , DataToCard , increment";   // for the CSV for Debug messages
+
+char buffer[7];
+///////////////////////////
 
 const uint8_t NUMBER_OF_VARIABLES = 16; // Number of variable to subscribe to
 char * variable_labels[NUMBER_OF_VARIABLES] = {"relay_big", "relay_small", "relay_fan"}; // labels of the variable to subscribe to
@@ -313,6 +323,48 @@ const int pressPin = 34; // pressure sensor pin GPIO 34 >> adc0
 /****************************************
  * Functions
  ****************************************/
+
+void DataToCSV() {
+   dataStr[0] = 0; //clean out string
+ statusRec[0] =0; 
+  //----------------------- using c-type ---------------------------
+ //convert floats to string and assemble c-type char string for writing:
+ ltoa( millis(),buffer,10); //convert long to charStr
+ strcat(dataStr, buffer); //add it to the end
+ strcat( dataStr, ", "); //append the delimiter
+ 
+ //dtostrf(floatVal, minimum width, precision, character array);
+ dtostrf(temperatureC, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( dataStr, buffer); //append the converted float
+ strcat( dataStr, ", "); //append the delimiter
+
+ dtostrf(SiTemp, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( dataStr, buffer); //append the converted float
+ strcat( dataStr, ", "); //append the delimiter
+
+ dtostrf(SiHum, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( dataStr, buffer); //append the converted float
+ strcat( dataStr, ", "); //terminate correctly 
+
+ //dtostrf(floatVal, minimum width, precision, character array);
+ dtostrf(Temerature, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( dataStr, buffer); //append the converted float
+ strcat( dataStr, ", "); //append the delimiter
+
+ dtostrf(Humidity, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( dataStr, buffer); //append the converted float
+ strcat( dataStr, ", "); //append the delimiter
+
+ dtostrf(pressureV, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( dataStr, buffer); //append the converted float
+ strcat( dataStr, 0); //terminate correctly 
+
+  Serial.println(HeadStr);
+ Serial.println(dataStr);
+
+  
+    appendFile(SD_MMC, "/datalogger.csv", dataStr);
+}
 
 void DataToCloud() {
   // REQUIRES sensor1, sensor2, sensor3, pressureV, accelermoeter_x, accelermoeter_y, accelerometer_z, Temperature, Humidity, temperatureC, SiHum, SiTemp.  RETURNS: Nothing
@@ -791,17 +843,12 @@ void setup() {
   Serial.print(DEVICE_LABEL);
   Serial.print("  Done  ");
 
-  writeFile(SD_MMC, "/DataLogger.csv");
+  writeFile(SD_MMC, "/datalogger.csv", HeadStr);
   Serial.print("SD_MMC Card DataLogger.csv : ");
-  Serial.print(DEVICE_LABEL);
+  Serial.print(HeadStr);
   Serial.print("  Done  ");
 
-  writeFile(SD_MMC, "/DebugLogger.csv");
-  Serial.print("SD_MMC Card DebugLogger.csv : ");
-  Serial.print(DEVICE_LABEL);
-  Serial.print("  Done  ");
 
-  appendFile(SD_MMC, "/hello.txt", "World!\n");
 
   // initializing the I/O
   pinMode(trigPin, OUTPUT);       // Sets the trigPin as an Output
