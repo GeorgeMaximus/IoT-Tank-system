@@ -114,6 +114,17 @@ char str_humid[10];
 char str_tempC[10];
 char str_humidSi[10];
 char str_tempSi[10];
+// debug variables 
+char str_dtc[10];
+char str_sensors[10];
+char str_card[10];
+char str_connects[10];
+//char str_tempSi[10];
+// debug increments 
+int msgs_cloud = 1;
+int msgs_card = 0 ;
+int msgs_sensors = 0;
+
 
 const uint8_t NUMBER_OF_VARIABLES = 16; // Number of variable to subscribe to
 char * variable_labels[NUMBER_OF_VARIABLES] = {"relay_big", "relay_small", "relay_fan"}; // labels of the variable to subscribe to
@@ -321,6 +332,11 @@ void DataToCloud() {
   dtostrf(temperatureC, 4, 2, str_tempC);
   dtostrf(SiHum, 4, 2, str_humidSi);
   dtostrf(SiTemp, 4, 2, str_tempSi);
+// debug variables to be assigned
+    dtostrf(msgs_sensors, 4, 2, str_sensors);
+  dtostrf(msgs_cloud, 4, 2, str_dtc);
+  dtostrf(msgs_card, 4, 2, str_card);
+  dtostrf(Reconnects, 4, 2, str_connects);
   
   // This section is to send the data measured from the esp32 to the ubidots
   sprintf(payload, "{\"");
@@ -336,6 +352,12 @@ void DataToCloud() {
   sprintf(payload, "%s,\"%s\":%s", payload, "temperatureC", str_tempC);
   sprintf(payload, "%s,\"%s\":%s", payload, "SiTemp", str_humidSi);
   sprintf(payload, "%s,\"%s\":%s", payload, "SiHum", str_tempSi);
+// debug variables to be assigned
+
+  sprintf(payload, "%s,\"%s\":%s", payload, "Sensors_Status", str_sensors);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_cloud", str_dtc);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_card", str_card);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Reconnects", str_connects);
   sprintf(payload, "%s}", payload);
   Serial.println(payload);
   Serial.println("Pushing data to the cloud");
@@ -346,6 +368,11 @@ void DataToCloud() {
     {
       Serial.println("");
      Serial.println("Msg Sent to cloud");
+      msgs_cloud ++ ;
+     Serial.println("total Msgs Sent to cloud");
+     Serial.println(msgs_cloud);
+
+
     }
     else  {
        Serial.println("");
@@ -489,7 +516,7 @@ else {
       Temperature = 999;
 }
 
-  if (SiHum > lowerBoundd && SiHum < upperBoundd) {
+  if (Humidity > lowerBoundd && Humidity < upperBoundd) {
       Serial.print("DHT Humidity are in range ");
       
 }
@@ -509,6 +536,7 @@ else {
   duration = pulseIn(echoPin, HIGH);
   distance= duration*0.034/2;       // Calculating the distance
   sensor1 = distance;
+  msgs_sensors ++ ;
 }
 
 
@@ -619,6 +647,9 @@ void appendFile(fs::FS &fs, const char * path, const char * message){
     }
     if(file.print(message)){
         Serial.println("Message appended");
+        msgs_card ++ ;
+        Serial.println("total Messages appended");
+        Serial.println(msgs_card);
     } else {
         Serial.println("Append failed");
     }
@@ -765,6 +796,10 @@ void setup() {
   Serial.print(DEVICE_LABEL);
   Serial.print("  Done  ");
 
+  writeFile(SD_MMC, "/DebugLogger.csv");
+  Serial.print("SD_MMC Card DebugLogger.csv : ");
+  Serial.print(DEVICE_LABEL);
+  Serial.print("  Done  ");
 
   appendFile(SD_MMC, "/hello.txt", "World!\n");
 
