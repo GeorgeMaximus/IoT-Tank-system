@@ -968,6 +968,15 @@ void loop() {
   //--------------Uploading Values to cloud-------------
   DataToCloud();       // REQUIRES sensor1, sensor2, sensor3, pressureV, accelermoeter_x, accelermoeter_y, accelerometer_z, Temperature, Humidity, temperatureC, SiHum, SiTemp.  RETURNS: Nothing
   Display_Cloud_Sent();     // REQUIRES WiFiSSID  RETURNS: Nothing  
+  
+  // SD card send data 
+
+   appendFile(SD_MMC, "/datalogger.csv", dataStr);
+  Serial.print("SD_MMC Card DataLogger.csv : ");
+  Serial.print(dataStr);
+  Serial.print("  Done  ");
+
+
 
   delay(1000);        // wait for display
   
