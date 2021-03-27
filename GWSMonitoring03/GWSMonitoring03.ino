@@ -79,11 +79,7 @@
 byte i;   // counter used in file reading
 byte x;   // counter used in file reading
 byte z;   // counter used in file reading
-/****************************************
- * Error Counters
- ****************************************/
-int Reconnects = 0;     // counts number of WiFi reconnects
-int Count_Samples = 0;  // counts number of samples read from sensors
+
 
 /****************************************
  * Hardware Initialisation
@@ -121,9 +117,15 @@ char str_card[10];
 char str_connects[10];
 //char str_tempSi[10];
 // debug increments 
-int msgs_cloud = 1;
-int msgs_card = 0 ;
-int msgs_sensors = 0;
+int msgs_cloud = 1; // number of msgs pushed to the cloud
+int msgs_card = 0 ; // number of msgs pushed to the card
+int msgs_sensors = 0; // counter of successful of data
+
+/****************************************
+ * Error Counters
+ ****************************************/
+int Reconnects = 0;     // counts number of WiFi reconnects
+int Count_Samples = 0;  // counts number of samples read from sensors
 
 // CSV Structure and variables to be stored in the SD Card
 //char charRead;
@@ -131,7 +133,7 @@ char dataStr[100] = "";
 char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure"; // for the CSV for data logger
 
 char statusRec[100] = "";
-char statusStr[100] = "Time ,SD card  , DataToCard , increment";   // for the CSV for Debug messages
+char statusStr[100] = "Time , Sensors , SD card  , DataTocloud , increment, Reconnects";   // for the CSV for Debug messages
 
 char buffer[7];
 ///////////////////////////
@@ -326,7 +328,7 @@ const int pressPin = 34; // pressure sensor pin GPIO 34 >> adc0
 
 void DataToCSV() {
    dataStr[0] = 0; //clean out string
- statusRec[0] =0; 
+ //statusRec[0] =0; 
   //----------------------- using c-type ---------------------------
  //convert floats to string and assemble c-type char string for writing:
  ltoa( millis(),buffer,10); //convert long to charStr
@@ -362,8 +364,58 @@ void DataToCSV() {
   Serial.println(HeadStr);
  Serial.println(dataStr);
 
-  
-    appendFile(SD_MMC, "/datalogger.csv", dataStr);
+    // SD card send data 
+
+   appendFile(SD_MMC, "/datalogger.csv", dataStr);
+  Serial.print("SD_MMC Card DataLogger.csv : ");
+  Serial.print(dataStr);
+  Serial.print("  Done  ");
+ 
+ msgs_card ++ ;
+
+}
+
+void DebugToCSV() {
+   //dataStr[0] = 0; //clean out string
+ statusRec[0] =0; 
+  //convert floats to string and assemble c-type char string for writing:
+ ltoa( millis(),buffer,10); //convert long to charStr
+ strcat(statusRec, buffer); //add it to the end
+ strcat( statusRec, ", "); //append the delimiter
+ 
+ //dtostrf(floatVal, minimum width, precision, character array);
+ dtostrf(msgs_sensors, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( statusRec, buffer); //append the converted float
+ strcat( statusRec, ", "); //append the delimiter
+
+
+ dtostrf(msgs_card, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( statusRec, buffer); //append the converted float
+ strcat( statusRec, ", "); //append the delimiter
+
+ dtostrf(msgs_cloud, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( statusRec, buffer); //append the converted float
+ strcat( statusRec, ", "); //terminate correctly 
+
+
+
+ //dtostrf(floatVal, minimum width, precision, character array);
+ dtostrf(Reconnects, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ strcat( statusRec, buffer); //append the converted float
+ strcat( statusRec, 0); //append the delimiter
+
+Serial.println(statusStr);
+Serial.println(statusRec);
+
+    // SD card send data 
+
+   appendFile(SD_MMC, "/debuglogger.csv", statusRec);
+  Serial.print("SD_MMC Card debugLogger.csv : ");
+  Serial.print(statusRec);
+  Serial.print("  Done  ");
+ 
+ 
+
 }
 
 void DataToCloud() {
@@ -848,6 +900,10 @@ void setup() {
   Serial.print(HeadStr);
   Serial.print("  Done  ");
 
+  writeFile(SD_MMC, "/debuglogger.csv", statusStr);
+  Serial.print("SD_MMC Card debugLogger.csv : ");
+  Serial.print(statusStr);
+  Serial.print("  Done  ");
 
 
   // initializing the I/O
@@ -946,6 +1002,7 @@ void setup() {
  ****************************************/
 void loop() {
   ReadAllSensors();           // read all sensors
+  DataToCSV()                 // Send sensors data to CSV 
   Count_Samples++;            // increment sample counter
   DisplaySensorsToSerial();   // Display sensor values
   Dispay_Sensor_Values();     // clear display and writes the sensor values. REQUIRES SiTemp, SiHum, Temperature, Humidity, pressureV.  RETURNS: Nothing
@@ -969,13 +1026,7 @@ void loop() {
   DataToCloud();       // REQUIRES sensor1, sensor2, sensor3, pressureV, accelermoeter_x, accelermoeter_y, accelerometer_z, Temperature, Humidity, temperatureC, SiHum, SiTemp.  RETURNS: Nothing
   Display_Cloud_Sent();     // REQUIRES WiFiSSID  RETURNS: Nothing  
   
-  // SD card send data 
-
-   appendFile(SD_MMC, "/datalogger.csv", dataStr);
-  Serial.print("SD_MMC Card DataLogger.csv : ");
-  Serial.print(dataStr);
-  Serial.print("  Done  ");
-
+  DebugToCSV();
 
 
   delay(1000);        // wait for display
