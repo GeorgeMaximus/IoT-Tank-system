@@ -1146,7 +1146,7 @@ void setup() {
  ****************************************/
 void loop() {
   ReadAllSensors();           // read all sensors
-  DataToCSV()                 // Send sensors data to CSV 
+  DataToCSV();                 // Send sensors data to CSV 
   Count_Samples++;            // increment sample counter
   DisplaySensorsToSerial();   // Display sensor values
   Dispay_Sensor_Values();     // clear display and writes the sensor values. REQUIRES SiTemp, SiHum, Temperature, Humidity, pressureV.  RETURNS: Nothing
