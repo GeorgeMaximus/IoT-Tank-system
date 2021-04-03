@@ -149,7 +149,7 @@ char statusStr[100] = "Time , Sensors , SD card  , DataTocloud , increment, Reco
 char buffer[7];
 ///////////////////////////
 
-const uint8_t NUMBER_OF_VARIABLES = 16; // Number of variable to subscribe to
+const uint8_t NUMBER_OF_VARIABLES = 20; // Number of variable to subscribe to
 char * variable_labels[NUMBER_OF_VARIABLES] = {"relay_big", "relay_small", "relay_fan"}; // labels of the variable to subscribe to
 
 
@@ -454,7 +454,7 @@ void DataToCSV() {
  strcat( dataStr, ", "); //terminate correctly 
 
  //dtostrf(floatVal, minimum width, precision, character array);
- dtostrf(Temerature, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ dtostrf(Temperature, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
  strcat( dataStr, buffer); //append the converted float
  strcat( dataStr, ", "); //append the delimiter
 
@@ -556,8 +556,8 @@ void DataToCloud() {
   sprintf(payload, "%s,\"%s\":%s", payload, "acc_X", str_accx);
   sprintf(payload, "%s,\"%s\":%s", payload, "acc_Y", str_accy);
   sprintf(payload, "%s,\"%s\":%s", payload, "acc_Z", str_accz);
-  sprintf(payload, "%s,\"%s\":%s", payload, "temperature", str_temp);
-  sprintf(payload, "%s,\"%s\":%s", payload, "humidity", str_humid);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Temperature", str_temp);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Humidity", str_humid);
   sprintf(payload, "%s,\"%s\":%s", payload, "temperatureC", str_tempC);
   sprintf(payload, "%s,\"%s\":%s", payload, "SiTemp", str_humidSi);
   sprintf(payload, "%s,\"%s\":%s", payload, "SiHum", str_tempSi);
@@ -722,7 +722,7 @@ void ReadAllSensors(){    // Read all the sensors
       
 }
 else {
-      Temperature = 999;
+      Temperature = 999.9;
 }
 
   if (Humidity > lowerBoundd && Humidity < upperBoundd) {
@@ -730,7 +730,7 @@ else {
       
 }
 else {
-      Humidity = 999;
+      Humidity = 999.9;
 }
   
  //--------------Ultrasonic Sensor------------------
