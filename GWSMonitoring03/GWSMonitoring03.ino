@@ -349,7 +349,7 @@ void DataToCSV() {
  strcat( dataStr, ", "); //terminate correctly 
 
  //dtostrf(floatVal, minimum width, precision, character array);
- dtostrf(Temerature, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
+ dtostrf(Temperature, 5, 1, buffer);  //5 is minimum width, 1 is precision; float value is copied onto buff
  strcat( dataStr, buffer); //append the converted float
  strcat( dataStr, ", "); //append the delimiter
 
