@@ -60,8 +60,14 @@
 #define ETH_PHY_POWER 12
 
 #include <ETH.h>
-/////////////////////////////
+///////////////////////////// Multible Threading /////////////////
+#include "Thread.h"
+//int ledPin = 2;
 
+//My simple Thread
+Thread myThread1 = Thread();
+Thread myThread2 = Thread();
+/////////////////////////////////////////////
 #include <PubSubClient.h>
 #include <DHT.h>
 #include "Configuration.h"
@@ -962,7 +968,15 @@ void setup() {
     Serial.println();
     Serial.println("Wait for WiFi... ");
     
+///////////////////////////////////////////// Multiple Threading ////////
 
+  myThread1.onRun(DataToCSV);
+  myThread1.setInterval(500);
+
+    myThread2.onRun(DataToCloud);
+  myThread2.setInterval(1000);
+
+  /////////////////////////////////////////////////////////////
 
 
   /*
@@ -1146,7 +1160,12 @@ void setup() {
  ****************************************/
 void loop() {
   ReadAllSensors();           // read all sensors
-  DataToCSV();                 // Send sensors data to CSV 
+  
+    // checks if thread should run ( Sending sensor data to the SD card ) 
+  if(myThread1.shouldRun())
+    myThread1.run();
+    
+  //DataToCSV()                 // Send sensors data to CSV 
   Count_Samples++;            // increment sample counter
   DisplaySensorsToSerial();   // Display sensor values
   Dispay_Sensor_Values();     // clear display and writes the sensor values. REQUIRES SiTemp, SiHum, Temperature, Humidity, pressureV.  RETURNS: Nothing
@@ -1167,7 +1186,12 @@ void loop() {
     }
   
   //--------------Uploading Values to cloud-------------
-  DataToCloud();       // REQUIRES sensor1, sensor2, sensor3, pressureV, accelermoeter_x, accelermoeter_y, accelerometer_z, Temperature, Humidity, temperatureC, SiHum, SiTemp.  RETURNS: Nothing
+
+// checks if thread should run ( Uploading sensor data to the cloud ) 
+    if(myThread2.shouldRun())
+    myThread2.run();
+    
+  //DataToCloud();       // REQUIRES sensor1, sensor2, sensor3, pressureV, accelermoeter_x, accelermoeter_y, accelerometer_z, Temperature, Humidity, temperatureC, SiHum, SiTemp.  RETURNS: Nothing
   Display_Cloud_Sent();     // REQUIRES WiFiSSID  RETURNS: Nothing  
   
   DebugToCSV();
