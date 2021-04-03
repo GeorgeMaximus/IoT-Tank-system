@@ -54,6 +54,13 @@
  * Include Libraries
  ****************************************/
 #include <WiFi.h>         //this is the WIFI library for setting up the wifi connection on esp32
+///////////////////////////////
+// Connecting to Ethernet 
+#define ETH_CLK_MODE ETH_CLOCK_GPIO17_OUT
+#define ETH_PHY_POWER 12
+
+#include <ETH.h>
+/////////////////////////////
 
 #include <PubSubClient.h>
 #include <DHT.h>
@@ -84,11 +91,15 @@ byte z;   // counter used in file reading
 /****************************************
  * Hardware Initialisation
  ****************************************/
+  // If we aren't using the SD card for passing the wifi credentials we use the credentials below
+    
 
 ////////////////////////// Wifi and SD card setup ////////////////
 char WiFiSSID[] = "";      // hold wifi ssid read from SD card
 char WiFiPASSWORD[] = "";  // holds wifi password read from SSID card
 char DEVICE_LABEL[] = ""; // holder for the device Id
+
+
 ////////////////////////// MQTT setup ////////////////
 #define TOKEN "BBFF-l8gRwzQpEikMaXp3uAahxYodCzOX45" // Put your Ubidots' TOKEN
 #define MQTT_CLIENT_NAME "GRDuncanIoT32DhTTankMaximus" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string;
@@ -325,6 +336,99 @@ const int pressPin = 34; // pressure sensor pin GPIO 34 >> adc0
 /****************************************
  * Functions
  ****************************************/
+
+// Ethernet and WIFI Integration functions :
+void WiFiEvent(WiFiEvent_t event)
+{
+    Serial.printf("[WiFi-event] event: %d\n", event);
+
+    switch (event) {
+        case SYSTEM_EVENT_WIFI_READY: 
+            Serial.println("WiFi interface ready");
+            break;
+        case SYSTEM_EVENT_SCAN_DONE:
+            Serial.println("Completed scan for access points");
+            break;
+        case SYSTEM_EVENT_STA_START:
+            Serial.println("WiFi client started");
+            break;
+        case SYSTEM_EVENT_STA_STOP:
+            Serial.println("WiFi clients stopped");
+            break;
+        case SYSTEM_EVENT_STA_CONNECTED:
+            Serial.println("Connected to access point");
+            break;
+        case SYSTEM_EVENT_STA_DISCONNECTED:
+            Serial.println("Disconnected from WiFi access point");
+            break;
+        case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
+            Serial.println("Authentication mode of access point has changed");
+            break;
+        case SYSTEM_EVENT_STA_GOT_IP:
+            Serial.print("Obtained IP address: ");
+            Serial.println(WiFi.localIP());
+            break;
+        case SYSTEM_EVENT_STA_LOST_IP:
+            Serial.println("Lost IP address and IP address is reset to 0");
+            break;
+        case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
+            Serial.println("WiFi Protected Setup (WPS): succeeded in enrollee mode");
+            break;
+        case SYSTEM_EVENT_STA_WPS_ER_FAILED:
+            Serial.println("WiFi Protected Setup (WPS): failed in enrollee mode");
+            break;
+        case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
+            Serial.println("WiFi Protected Setup (WPS): timeout in enrollee mode");
+            break;
+        case SYSTEM_EVENT_STA_WPS_ER_PIN:
+            Serial.println("WiFi Protected Setup (WPS): pin code in enrollee mode");
+            break;
+        case SYSTEM_EVENT_AP_START:
+            Serial.println("WiFi access point started");
+            break;
+        case SYSTEM_EVENT_AP_STOP:
+            Serial.println("WiFi access point  stopped");
+            break;
+        case SYSTEM_EVENT_AP_STACONNECTED:
+            Serial.println("Client connected");
+            break;
+        case SYSTEM_EVENT_AP_STADISCONNECTED:
+            Serial.println("Client disconnected");
+            break;
+        case SYSTEM_EVENT_AP_STAIPASSIGNED:
+            Serial.println("Assigned IP address to client");
+            break;
+        case SYSTEM_EVENT_AP_PROBEREQRECVED:
+            Serial.println("Received probe request");
+            break;
+        case SYSTEM_EVENT_GOT_IP6:
+            Serial.println("IPv6 is preferred");
+            break;
+        case SYSTEM_EVENT_ETH_START:
+            Serial.println("Ethernet started");
+            break;
+        case SYSTEM_EVENT_ETH_STOP:
+            Serial.println("Ethernet stopped");
+            break;
+        case SYSTEM_EVENT_ETH_CONNECTED:
+            Serial.println("Ethernet connected");
+            break;
+        case SYSTEM_EVENT_ETH_DISCONNECTED:
+            Serial.println("Ethernet disconnected");
+            break;
+        case SYSTEM_EVENT_ETH_GOT_IP:
+            Serial.println("Obtained IP address");
+            break;
+        default: break;
+    }}
+
+void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+    Serial.println("WiFi connected");
+    Serial.println("IP address: ");
+    Serial.println(IPAddress(info.got_ip.ip_info.ip.addr));
+}
+/////////////////////////////////////////////////////////////
 
 void DataToCSV() {
    dataStr[0] = 0; //clean out string
@@ -825,6 +929,42 @@ else {
  * Setup
  ****************************************/
 void setup() {
+  ////////////////////////  Using the Ethernet & Wifi Integration //////////
+      // delete old config
+    WiFi.disconnect(true);
+
+  // If we aren't using the SD card for passing the wifi credentials we use the credentials below
+    
+
+////////////////////////// Wifi and SD card setup ////////////////
+      WiFiSSID[] = "DBHome";      // hold wifi ssid read from SD card
+      WiFiPASSWORD[] = "DB16091963";  // holds wifi password read from SSID card
+      delay(1000);
+
+    // Examples of different ways to register wifi events
+    WiFi.onEvent(WiFiEvent);
+    WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
+    WiFiEventId_t eventID = WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info){
+        Serial.print("WiFi lost connection. Reason: ");
+        Serial.println(info.disconnected.reason);
+    }, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
+
+    // Remove WiFi event
+    Serial.print("WiFi Event ID: ");
+    Serial.println(eventID);
+    // WiFi.removeEvent(eventID);
+
+     WiFi.begin(WiFiSSID, WiFiPASSWORD); // using your wifi username and password to connect to wifi
+
+
+    Serial.println();
+    Serial.println();
+    Serial.println("Wait for WiFi... ");
+    
+
+
+
+  /*
   noInterrupts();   // disable all interrupts
   ////////////////////////////////////////////// Wifi Manager for the AP/////
    WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
@@ -851,7 +991,7 @@ void setup() {
   //if you get here you have connected to the WiFi
   Serial.println("connected...yeey :)");
   
-
+*/
 
   
 /////////////////////////////////////// SD card ////////////////
@@ -880,6 +1020,8 @@ void setup() {
   uint64_t cardSize = SD_MMC.cardSize() / (1024 * 1024);
   Serial.printf("SD_MMC Card Size: %lluMB\n", cardSize);
 
+  // If we want to read the credentials from the Sd card uncomment the below section
+  /*
   readFile(SD_MMC, "/ssid.txt");
   Serial.print("SD_MMC Card ssid.txt : ");
   Serial.print(WiFiSSID);
@@ -894,6 +1036,7 @@ void setup() {
   Serial.print("SD_MMC Card id.txt : ");
   Serial.print(DEVICE_LABEL);
   Serial.print("  Done  ");
+*/
 
   writeFile(SD_MMC, "/datalogger.csv", HeadStr);
   Serial.print("SD_MMC Card DataLogger.csv : ");
