@@ -74,7 +74,7 @@
 #include <Wire.h> // This library allows you to communicate with I2C devices.
 
 //////////////// Multiple Wifi /////////////////
-#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+//#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 
 ////////////////////////////////////////////
 
@@ -161,6 +161,7 @@ const int ERROR_VALUE = 65535; // Set here an error value
 WiFiClient ubidots;
 PubSubClient client(ubidots);
 
+/*
 /////////////////////// Wifi Manager CallBack return credentials /////////
 //gets called when WiFiManager enters configuration mode
 void configModeCallback (WiFiManager *myWiFiManager) {
@@ -172,7 +173,7 @@ void configModeCallback (WiFiManager *myWiFiManager) {
   //ticker.attach(0.2, tick);
 }
 ////////////////////////////////////////////////////////////////////
-
+*/
 // This function to define the variables for the cloud itself
 void get_variable_label_topic(char * topic, char * variable_label) {
   Serial.print("topic:"); // print the topic we push the data to
