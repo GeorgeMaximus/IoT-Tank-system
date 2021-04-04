@@ -132,12 +132,12 @@ char str_dtc[10];
 char str_sensors[10];
 char str_card[10];
 char str_connects[10];
-//char str_tempSi[10];
+char str_full[10];
 // debug increments 
 int msgs_cloud = 1; // number of msgs pushed to the cloud
 int msgs_card = 0 ; // number of msgs pushed to the card
 int msgs_sensors = 0; // counter of successful of data
-
+int cardFull = 0; // Initialize the Card as if it is free or full
 /****************************************
  * Error Counters
  ****************************************/
@@ -552,6 +552,7 @@ void DataToCloud() {
   dtostrf(msgs_cloud, 4, 2, str_dtc);
   dtostrf(msgs_card, 4, 2, str_card);
   dtostrf(Reconnects, 4, 2, str_connects);
+  dtostrf(cardFull, 4, 2, str_full);
   
   // This section is to send the data measured from the esp32 to the ubidots
   sprintf(payload, "{\"");
@@ -573,6 +574,7 @@ void DataToCloud() {
   sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_cloud", str_dtc);
   sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_card", str_card);
   sprintf(payload, "%s,\"%s\":%s", payload, "Reconnects", str_connects);
+  sprintf(payload, "%s,\"%s\":%s", payload, "cardFull", str_full);
   sprintf(payload, "%s}", payload);
   Serial.println(payload);
   Serial.println("Pushing data to the cloud");
@@ -1052,8 +1054,14 @@ void setup() {
   Serial.print(DEVICE_LABEL);
   Serial.print("  Done  ");
 */
+  // Check the capacity of the Card and if there is space we can write to it
+      Serial.printf("Total space: %lluMB\n", SD_MMC.totalBytes() / (1024 * 1024));
+    Serial.printf("Used space: %lluMB\n", SD_MMC.usedBytes() / (1024 * 1024));
+    float totalStorage = SD_MMC.totalBytes() / (1024 * 1024) ;
+    float usedStorage = SD_MMC.usedBytes() / (1024 * 1024) ;
 
-  writeFile(SD_MMC, "/datalogger.csv", HeadStr);
+  if (totalStorage > 1.1*usedStorage) {
+     writeFile(SD_MMC, "/datalogger.csv", HeadStr);
   Serial.print("SD_MMC Card DataLogger.csv : ");
   Serial.print(HeadStr);
   Serial.print("  Done  ");
@@ -1062,6 +1070,13 @@ void setup() {
   Serial.print("SD_MMC Card debugLogger.csv : ");
   Serial.print(statusStr);
   Serial.print("  Done  ");
+
+  }
+  else {
+    Serial.print("Warning :You should Change the SD Card as it is FULL ");
+    cardFull = 1 ;
+  }
+ 
 
 
   // initializing the I/O
