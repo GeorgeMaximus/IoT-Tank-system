@@ -101,9 +101,9 @@ byte z;   // counter used in file reading
     
 
 ////////////////////////// Wifi and SD card setup ////////////////
-char WiFiSSID = "DBHome";      // hold wifi ssid read from SD card
-char WiFiPASSWORD ="DB16091963";  // holds wifi password read from SSID card
-char DEVICE_LABEL = ""; // holder for the device Id
+char* WiFiSSID = "DBHome";      // hold wifi ssid read from SD card
+char* WiFiPASSWORD ="DB16091963";  // holds wifi password read from SSID card
+char* DEVICE_LABEL = "GWSMonitoring03"; // holder for the device Id
 
 
 ////////////////////////// MQTT setup ////////////////
@@ -948,6 +948,8 @@ void setup() {
 ////////////////////////// Wifi and SD card setup ////////////////
      //WiFiSSID[] = "DBHome";      // hold wifi ssid read from SD card
       //WiFiPASSWORD[] = "DB16091963";  // holds wifi password read from SSID card
+   //   String mystring(WiFiSSID);
+     // String mystring(WiFiPASSWORD);
       delay(1000);
 
     // Examples of different ways to register wifi events
@@ -1127,7 +1129,7 @@ void setup() {
   display.setTextAlignment(TEXT_ALIGN_LEFT); 
   display.setFont(ArialMT_Plain_10);
   display.drawString(0, 30, "Connecting to wifi ");
-  display.drawString(0, 40,String(WiFi.status());
+  display.drawString(0, 40,String(WiFi.status()));
   display.display();
   delay(1000);
 
