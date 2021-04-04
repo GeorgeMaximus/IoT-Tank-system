@@ -101,9 +101,9 @@ byte z;   // counter used in file reading
     
 
 ////////////////////////// Wifi and SD card setup ////////////////
-char WiFiSSID[] = "";      // hold wifi ssid read from SD card
-char WiFiPASSWORD[] = "";  // holds wifi password read from SSID card
-char DEVICE_LABEL[] = ""; // holder for the device Id
+char WiFiSSID = "DBHome";      // hold wifi ssid read from SD card
+char WiFiPASSWORD ="DB16091963";  // holds wifi password read from SSID card
+char DEVICE_LABEL = ""; // holder for the device Id
 
 
 ////////////////////////// MQTT setup ////////////////
@@ -944,8 +944,8 @@ void setup() {
     
 
 ////////////////////////// Wifi and SD card setup ////////////////
-      WiFiSSID[] = "DBHome";      // hold wifi ssid read from SD card
-      WiFiPASSWORD[] = "DB16091963";  // holds wifi password read from SSID card
+     //WiFiSSID[] = "DBHome";      // hold wifi ssid read from SD card
+      //WiFiPASSWORD[] = "DB16091963";  // holds wifi password read from SSID card
       delay(1000);
 
     // Examples of different ways to register wifi events
