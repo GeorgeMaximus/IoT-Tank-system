@@ -1,0 +1,9 @@
+* Multti Threading ( read sensors & cloud publish ) 
+* Wifi 
+* Wifi With AP only 
+* Send to ubidots
+* debug before lost and after
+
+//////////////////////////////////
+
+My procedure , the AP testing first integrated with ubidots
