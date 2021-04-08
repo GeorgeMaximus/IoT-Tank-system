@@ -99,8 +99,7 @@ void reconnect() {
   }
 }
 
-///////////////////////////////////////////////////////////
-
+/////////////////////////////////////////////////////
 
 // Specified the offset if the user data exists.
 // The following two lines define the boundalyOffset value to be supplied to
@@ -216,6 +215,54 @@ String delCredential(PageArgument& args) {
   return "";
 }
 
+//////////////////////////////// Multi Tasking /////////////////////
+TaskHandle_t DataToCloudTask;
+TaskHandle_t SensorsDataTask;
+
+void Task1code( void * pvParameters ){
+  while (true){
+    Serial.println("Hello from first task");
+      if (!client.connected()) {
+    reconnect();
+  }
+
+  sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);
+  sprintf(payload, "%s", ""); // Cleans the payload
+  //sprintf(payload, "{\"%s\":", VARIABLE_LABEL); // Adds the variable label
+  
+  //float sensor = random(500); 
+  
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
+  dtostrf(sensor, 4, 2, str_sensor);
+  dtostrf(sensor2, 4, 2, str_sensor2);
+  dtostrf(sensor3, 4, 2, str_sensor3);
+    sprintf(payload, "{\"");
+  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
+    sprintf(payload, "%s}", payload);
+  Serial.println(payload);
+  Serial.println("Publishing data to Ubidots Cloud");
+  client.publish(topic, payload);
+  client.loop();
+  
+    delay(3000); // task repeat every number of milliseconds
+
+  }
+}
+
+void Task2code( void * pvParameters ){
+  while (true){
+    Serial.println("Hello from Second task");
+      sensor = random(500); 
+  sensor2 = random(500); 
+  sensor3 = random(500); 
+  
+    delay(1000);  // task repeat every number of milliseconds
+
+  }
+}
+
 /////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
@@ -240,11 +287,31 @@ void setup() {
 //////////////// MQTT Ubidots Initiaization //////////
     client.setServer(mqttBroker, 1883);
   client.setCallback(callback);  
+
+    //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
+  xTaskCreatePinnedToCore(
+     Task1code,    //Task function.
+     "DataToCloudTask", //name of task
+     10000, //Stack size of task
+     NULL, //parameter of the task
+     1, //priority of the task
+     &DataToCloudTask, //Task handle to keep track of created task
+     0); //pin task to core 0
+  //create a task that will be executed in the Task2code() function, with priority 1 and executed on core 0
+  xTaskCreatePinnedToCore(
+     Task2code,    //Task function.
+     "SensorsDataTask", //name of task
+     10000, //Stack size of task
+     NULL, //parameter of the task
+     1, //priority of the task
+     &SensorsDataTask, //Task handle to keep track of created task
+     0); //pin task to core 0
+
 }
 
 void loop() {
-  DataCollection();
-  DataToCloud();
+ // DataCollection();
+//  DataToCloud();
     Portal.handleClient();
 }
 
