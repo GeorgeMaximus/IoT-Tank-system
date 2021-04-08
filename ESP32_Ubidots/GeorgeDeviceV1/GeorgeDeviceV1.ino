@@ -59,6 +59,12 @@ char payload[100];
 char topic[150];
 // Space to store values to send
 char str_sensor[10];
+char str_sensor2[10];
+char str_sensor3[10];
+
+float sensor;
+float sensor2;
+float sensor3;
 ////////////////////////////////////////////////////////////////////////
 /****************************************
  * Auxiliar Functions
@@ -237,8 +243,16 @@ void setup() {
 }
 
 void loop() {
+  DataCollection();
   DataToCloud();
     Portal.handleClient();
+}
+
+void DataCollection(){
+  sensor = random(500); 
+  sensor2 = random(500); 
+  sensor3 = random(500); 
+  
 }
 
 void DataToCloud() {
@@ -248,14 +262,20 @@ void DataToCloud() {
 
   sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);
   sprintf(payload, "%s", ""); // Cleans the payload
-  sprintf(payload, "{\"%s\":", VARIABLE_LABEL); // Adds the variable label
+  //sprintf(payload, "{\"%s\":", VARIABLE_LABEL); // Adds the variable label
   
-  float sensor = random(500); 
+  //float sensor = random(500); 
   
   /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
   dtostrf(sensor, 4, 2, str_sensor);
-  
-  sprintf(payload, "%s {\"value\": %s}}", payload, str_sensor); // Adds the value
+  dtostrf(sensor2, 4, 2, str_sensor2);
+  dtostrf(sensor3, 4, 2, str_sensor3);
+    sprintf(payload, "{\"");
+  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
+    sprintf(payload, "%s}", payload);
+  Serial.println(payload);
   Serial.println("Publishing data to Ubidots Cloud");
   client.publish(topic, payload);
   client.loop();
