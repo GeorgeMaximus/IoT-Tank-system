@@ -22,14 +22,14 @@ Thread myThread2 = Thread();
  ****************************************/
   // If we aren't using the SD card for passing the wifi credentials we use the credentials below
 ////////////////////////// Wifi and SD card setup ////////////////
-char* WiFiSSID = "DBHome";      // hold wifi ssid read from SD card
-char* WiFiPASSWORD ="DB16091963";  // holds wifi password read from SSID card
-char* DEVICE_LABEL = "GWSMonitoring03"; // holder for the device Id
+char* WiFiSSID = "GeorgeMaximus";      // hold wifi ssid read from SD card
+char* WiFiPASSWORD ="maxi1234";  // holds wifi password read from SSID card
+char* DEVICE_LABEL = "GWSMonitoring05"; // holder for the device Id
 
 
 ////////////////////////// MQTT setup ////////////////
 #define TOKEN "BBFF-l8gRwzQpEikMaXp3uAahxYodCzOX45" // Put your Ubidots' TOKEN
-#define MQTT_CLIENT_NAME "GRDuncanIoT32DhTTankMaximus" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string;
+#define MQTT_CLIENT_NAME "GRDuncanIoT32DhTTankMaximus53" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string;
 
 // This to create a connection with the MQTT broker and dashboard of the Ubidots 
 char mqttBroker[]  = "things.ubidots.com";
@@ -59,6 +59,8 @@ int msgs_cloud = 1; // number of msgs pushed to the cloud
 int msgs_card = 0 ; // number of msgs pushed to the card
 int msgs_sensors = 0; // counter of successful of data
 int cardFull = 0; // Initialize the Card as if it is free or full
+
+
 /****************************************
  * Error Counters
  ****************************************/
@@ -67,11 +69,11 @@ int Count_Samples = 0;  // counts number of samples read from sensors
 
 
 ////////////////////////// Variables used to write CSV file to Sd Card ////////////////
-char dataStr[100] = "";
+String dataStr = "";
 char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum "; // for the CSV for data logger
 //char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure"; // for the CSV for data logger
 
-char statusRec[100] = "";
+String statusRec = "";
 char statusStr[100] = "Time , Sensors , SD card  , DataTocloud , increment, Reconnects";   // for the CSV for Debug messages
 
 char buffer[7];
@@ -183,8 +185,9 @@ float Humidity;
 //long duration;    // This are variables for the Ultrasonic readings
 int distance;
 float sensor1 ;     //
-
-
+float temperatureC;
+float SiTemp;
+float SiHum;
 /////// Pressure Sensor value
 float pressureV;    // value from ADC
 
@@ -194,9 +197,9 @@ float pressureV;    // value from ADC
 void DataToCSV() {
   //dataStr[0] = 0; //clean out string
   Serial.println("From Data to CSV Function");
-  dataStr = String(millis()) + "," + String(temperatureC) + ","+ String(SiTemp) + ","+ String(SiHum);
+   String SSupd = String(millis()) + "," + String(temperatureC) + ","+ String(SiTemp) + ","+ String(SiHum);
 
-
+ dataStr = SSupd ;
   Serial.println(HeadStr);
   Serial.println(dataStr);
   msgs_card ++ ;
@@ -205,9 +208,10 @@ void DataToCSV() {
 
 void DebugToCSV() {
   Serial.println("From Debug to CSV Function");
-    statusRec = String(msgs_sensors) + "," + String(msgs_card) + ","+ String(msgs_cloud) + ","+ String(Reconnects);
+   
+   String SSup = String(msgs_sensors) + "," + String(msgs_card) + ","+ String(msgs_cloud) + ","+ String(Reconnects);
 
-
+  statusRec = SSup;
   Serial.println(statusStr);
   Serial.println(statusRec);
 }
@@ -393,7 +397,7 @@ void ReadAllSensors(){    // Read all the sensors
   sensor1 = random(100);
   SiHum = random(100);
   SiTemp = random(100);
-  float temperatureC = random(100);
+  temperatureC = random(100);
   accelerometer_y = random(100);
   accelerometer_z = random(100);
   accelerometer_x= random(100);
