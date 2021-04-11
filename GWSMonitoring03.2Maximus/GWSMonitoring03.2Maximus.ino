@@ -3,10 +3,11 @@
 /****************************************
  * Include Libraries
  ****************************************/
-#include <WiFi.h>         //this is the WIFI library for setting up the wifi connection on esp32
-#include <PubSubClient.h>
+//#include <WiFi.h>         //this is the WIFI library for setting up the wifi connection on esp32
+//#include <PubSubClient.h>
 ///////////////////////////////
 
+/*
 ///////////////////////////// Multible Threading /////////////////
 #include "Thread.h"
 //int ledPin = 2;
@@ -15,6 +16,145 @@
 Thread myThread1 = Thread();
 Thread myThread2 = Thread();
 /////////////////////////////////////////////
+*/
+
+
+//// Access point creation libraries 
+
+
+#if defined(ARDUINO_ARCH_ESP8266)
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#elif defined(ARDUINO_ARCH_ESP32)
+#include <WiFi.h>
+#include <WebServer.h>
+#endif
+#include <AutoConnect.h>
+#include <AutoConnectCredential.h>
+#include <PageBuilder.h>
+#include <PubSubClient.h>
+
+#if defined(ARDUINO_ARCH_ESP8266)
+ESP8266WebServer Server;
+#elif defined(ARDUINO_ARCH_ESP32)
+WebServer Server;
+#endif
+
+AutoConnect      Portal(Server);
+String viewCredential(PageArgument&);
+String delCredential(PageArgument&);
+
+
+#define CREDENTIAL_OFFSET 0
+//#define CREDENTIAL_OFFSET 64
+
+/**
+ *  An HTML for the operation page.
+ *  In PageBuilder, the token {{SSID}} contained in an HTML template below is
+ *  replaced by the actual SSID due to the action of the token handler's
+ * 'viewCredential' function.
+ *  The number of the entry to be deleted is passed to the function in the
+ *  POST method.
+ */
+static const char PROGMEM html[] = R"*lit(
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  html {
+  font-family:Helvetica,Arial,sans-serif;
+  -ms-text-size-adjust:100%;
+  -webkit-text-size-adjust:100%;
+  }
+  .menu > a:link {
+    position: absolute;
+    display: inline-block;
+    right: 12px;
+    padding: 0 6px;
+    text-decoration: none;
+  }
+  </style>
+</head>
+<body>
+<div class="menu">{{AUTOCONNECT_MENU}}</div>
+<form action="/del" method="POST">
+  <ol>
+  {{SSID}}
+  </ol>
+  <p>Enter deleting entry:</p>
+  <input type="number" min="1" name="num">
+  <input type="submit">
+</form>
+</body>
+</html>
+)*lit";
+
+static const char PROGMEM autoconnectMenu[] = { AUTOCONNECT_LINK(BAR_24) };
+
+// URL path as '/'
+PageElement elmList(html,
+  {{ "SSID", viewCredential },
+   { "AUTOCONNECT_MENU", [](PageArgument& args) {
+                            return String(FPSTR(autoconnectMenu));} }
+  });
+PageBuilder rootPage("/", { elmList });
+
+// URL path as '/del'
+PageElement elmDel("{{DEL}}", {{ "DEL", delCredential }});
+PageBuilder delPage("/del", { elmDel });
+
+// Retrieve the credential entries from EEPROM, Build the SSID line
+// with the <li> tag.
+String viewCredential(PageArgument& args) {
+  AutoConnectCredential  ac(CREDENTIAL_OFFSET);
+  station_config_t  entry;
+  String content = "";
+  uint8_t  count = ac.entries();          // Get number of entries.
+
+  for (int8_t i = 0; i < count; i++) {    // Loads all entries.
+    ac.load(i, &entry);
+    // Build a SSID line of an HTML.
+    content += String("<li>") + String((char *)entry.ssid) + String("</li>");
+  }
+
+  // Returns the '<li>SSID</li>' container.
+  return content;
+}
+
+// Delete a credential entry, the entry to be deleted is passed in the
+// request parameter 'num'.
+String delCredential(PageArgument& args) {
+  AutoConnectCredential  ac(CREDENTIAL_OFFSET);
+  if (args.hasArg("num")) {
+    int8_t  e = args.arg("num").toInt();
+    Serial.printf("Request deletion #%d\n", e);
+    if (e > 0) {
+      station_config_t  entry;
+
+      // If the input number is valid, delete that entry.
+      int8_t  de = ac.load(e - 1, &entry);  // A base of entry num is 0.
+      if (de > 0) {
+        Serial.printf("Delete for %s ", (char *)entry.ssid);
+        Serial.printf("%s\n", ac.del((char *)entry.ssid) ? "completed" : "failed");
+
+        // Returns the redirect response. The page is reloaded and its contents
+        // are updated to the state after deletion. It returns 302 response
+        // from inside this token handler.
+        Server.sendHeader("Location", String("http://") + Server.client().localIP().toString() + String("/"));
+        Server.send(302, "text/plain", "");
+        Server.client().flush();
+        Server.client().stop();
+
+        // Cancel automatic submission by PageBuilder.
+        delPage.cancel();
+      }
+    }
+  }
+  return "";
+}
+////////////////////////////////////////////////////
+
 
 
 /****************************************
@@ -22,8 +162,8 @@ Thread myThread2 = Thread();
  ****************************************/
   // If we aren't using the SD card for passing the wifi credentials we use the credentials below
 ////////////////////////// Wifi and SD card setup ////////////////
-char* WiFiSSID = "GeorgeMaximus";      // hold wifi ssid read from SD card
-char* WiFiPASSWORD ="maxi1234";  // holds wifi password read from SSID card
+//char* WiFiSSID = "GeorgeMaximus";      // hold wifi ssid read from SD card
+//char* WiFiPASSWORD ="maxi1234";  // holds wifi password read from SSID card
 char* DEVICE_LABEL = "GWSMonitoring05"; // holder for the device Id
 
 
@@ -194,6 +334,33 @@ float pressureV;    // value from ADC
 /****************************************
  * Functions
  ****************************************/
+
+ //////////////////////////////// Multi Tasking /////////////////////
+TaskHandle_t DataToCloudTask;
+TaskHandle_t SensorsDataTask;
+
+void Task1code( void * pvParameters ){
+  while (true){
+    
+      
+      DataToCloud();
+      delay(3000); // task repeat every number of milliseconds
+  }
+}
+
+void Task2code( void * pvParameters ){
+  while (true){
+
+    ReadAllSensors();
+    delay(500);
+    DataToCSV();
+     delay(500);
+    DebugToCSV();
+    
+       delay(500);  // task repeat every number of milliseconds
+  }
+}
+
 void DataToCSV() {
   //dataStr[0] = 0; //clean out string
   Serial.println("From Data to CSV Function");
@@ -291,7 +458,7 @@ void DataToCloud() {
     Serial.println("total Msgs Sent to cloud");
     Serial.println(msgs_cloud);
   
-    delay(300); // task repeat every number of milliseconds
+    //delay(1000); // task repeat every number of milliseconds
 
 }
 
@@ -410,60 +577,57 @@ void ReadAllSensors(){    // Read all the sensors
 
 void setup() {
 
-  Serial.begin(115200); // initializing a serial monitor 
+  delay(1000);
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println("Serial is started " );
 
-  Serial.print("Hello From Setup Loop");
-    // CSV Threading 
-    myThread1.onRun(DataToCSV);
-  myThread1.setInterval(500);
-  ////////////////////////  Using the Ethernet & Wifi Integration //////////
-      // delete old config
-  WiFi.disconnect(true);
+// create the thread of task os getting sensor data 
+  //create a task that will be executed in the Task2code() function, with priority 1 and executed on core 0
+  xTaskCreatePinnedToCore(
+     Task2code,    //Task function.
+     "SensorsDataTask", //name of task
+     10000, //Stack size of task
+     NULL, //parameter of the task
+     1, //priority of the task
+     &SensorsDataTask, //Task handle to keep track of created task
+     0); //pin task to core 0
 
-  // If we aren't using the SD card for passing the wifi credentials we use the credentials below
-  ////////////////////////// Wifi and SD card setup ////////////////
-  //WiFiSSID[] = "DBHome";      // hold wifi ssid read from SD card
-  //WiFiPASSWORD[] = "DB16091963";  // holds wifi password read from SSID card
+  rootPage.insert(Server);    // Instead of Server.on("/", ...);
+  //delPage.insert(Server);     // Instead of Server.on("/del", ...); ( have deleted this ) 
 
-  // Examples of different ways to register wifi events
-  WiFi.onEvent(WiFiEvent);
-  WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
-  WiFiEventId_t eventID = WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info){
-    Serial.print("WiFi lost connection. Reason: ");
-    Serial.println(info.disconnected.reason);
-  }, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
+  // Set an address of the credential area.
+  Serial.println("COnfiguration is starting" );
+  AutoConnectConfig Config;
+  Config.boundaryOffset = CREDENTIAL_OFFSET;
+   Serial.println("COnfiguration Portal is on the way" );
+  Portal.config(Config);
 
-  // Remove WiFi event
-  Serial.print("WiFi Event ID: ");
-  Serial.println(eventID);
-  // WiFi.removeEvent(eventID);
+  // Start
+  if (Portal.begin()) {
+    Serial.println("WiFi connected: " + WiFi.SSID());
+    Serial.println("WiFi connected: " + WiFi.localIP().toString());
+  }
 
-  WiFi.begin(WiFiSSID, WiFiPASSWORD); // using your wifi username and password to connect to wifi
-  Serial.println("Wait for WiFi... ");
-    
-  ///////////////////////////////////////////// Multiple Threading ////////
+//////////////// MQTT Ubidots Initiaization //////////
+    client.setServer(mqttBroker, 1883);
+    Serial.println("MQTT Broker connected" );
+  client.setCallback(callback);  
 
-
-  myThread2.onRun(DataToCloud);
-  myThread2.setInterval(1000);
-
-   client.setServer(mqttBroker, 1883); // create a mqtt broker server
-  client.setCallback(callback);  // create a callback from the ubidots
-
+    //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
+  xTaskCreatePinnedToCore(
+     Task1code,    //Task function.
+     "DataToCloudTask", //name of task
+     10000, //Stack size of task
+     NULL, //parameter of the task
+     1, //priority of the task
+     &DataToCloudTask, //Task handle to keep track of created task
+     0); //pin task to core 0
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-    ReadAllSensors();           // read all sensors
-  
-    // checks if thread should run ( Sending sensor data to the SD card ) 
-  if(myThread1.shouldRun())
-    myThread1.run();
-   Count_Samples++;  
-
-       if(myThread2.shouldRun())
-    myThread2.run();
-
+  //
+     Portal.handleClient();
     
 
 }
