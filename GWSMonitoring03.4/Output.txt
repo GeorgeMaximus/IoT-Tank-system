@@ -1,0 +1,108 @@
+
+Serial is started 
+COnfiguration is starting
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+1
+COnfiguration Portal is on the way
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+1526,60.00,87.00,68.00,72.00,47.00,20.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+1,1,1,0
+Sensors data collected
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+2
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+3526,38.00,39.00,37.00,44.00,10.00,39.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+2,2,1,0
+Sensors data collected
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+3
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+5526,19.00,31.00,42.00,32.00,64.00,79.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+3,3,1,0
+Sensors data collected
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+4
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+7526,32.00,89.00,20.00,51.00,4.00,19.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+4,4,1,0
+Sensors data collected
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+5
+WiFi connected: D-Link
+WiFi connected: 192.168.1.7
+MQTT Broker connected
+Attempting MQTT connection...
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+9526,76.00,34.00,92.00,34.00,89.00,33.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+5,5,1,0
+Sensors data collected
+Connected
+{"Ultrasonic":53.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":33.00,"Temperature":34.00,"Humidity":89.00,"temperatureC":76.00,"SiTemp":92.00,"SiHum":34.00,"Sensors_Status":5.00,"Msgs_to_cloud":1.00,"Msgs_to_card":5.00,"Reconnects":0.00,"cardFull":0.00}
+Pushing data to the cloud
+Publishing data to Ubidots Cloud
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+6
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+11526,89.00,75.00,87.00,10.00,61.00,96.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+6,6,1,0
+Sensors data collected
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+7
+{"Ultrasonic":98.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":68.00,"Temperature":65.00,"Humidity":3.00,"temperatureC":50.00,"SiTemp":59.00,"SiHum":97.00,"Sensors_Status":7.00,"Msgs_to_cloud":1.00,"Msgs_to_card":6.00,"Reconnects":0.00,"cardFull":0.00}
+Pushing data to the cloud
+Publishing data to Ubidots Cloud
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+13526,50.00,97.00,59.00,65.00,3.00,68.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+7,7,1,0
+Sensors data collected
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+8
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+15526,5.00,62.00,57.00,90.00,97.00,36.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+8,8,1,0
+Sensors data collected
+{"Ultrasonic":76.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":36.00,"Temperature":90.00,"Humidity":97.00,"temperatureC":5.00,"SiTemp":57.00,"SiHum":62.00,"Sensors_Status":8.00,"Msgs_to_cloud":1.00,"Msgs_to_card":8.00,"Reconnects":0.00,"cardFull":0.00}
+Pushing data to the cloud
+Publishing data to Ubidots Cloud
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+9
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+17526,80.00,79.00,12.00,48.00,55.00,36.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+9,9,1,0
+Sensors data collected
