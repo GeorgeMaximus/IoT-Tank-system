@@ -1,0 +1,216 @@
+Serial is started 
+COnfiguration is starting
+Sensors Read Done & No. of function loops = 
+1
+COnfiguration Portal is on the way
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+2021,71.00,60.00,92.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+1,1,1,0
+Sensors Read Done & No. of function loops = 
+2
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+3521,89.00,53.00,80.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+2,2,1,0
+Sensors Read Done & No. of function loops = 
+3
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+5021,48.00,31.00,49.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+3,3,1,0
+Sensors Read Done & No. of function loops = 
+4
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+6521,7.00,98.00,89.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+4,4,1,0
+Sensors Read Done & No. of function loops = 
+5
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+8021,1.00,90.00,54.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+5,5,1,0
+Sensors Read Done & No. of function loops = 
+6
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+9521,72.00,89.00,25.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+6,6,1,0
+Sensors Read Done & No. of function loops = 
+7
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+11021,56.00,44.00,97.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+7,7,1,0
+Sensors Read Done & No. of function loops = 
+8
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+12521,31.00,9.00,31.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+8,8,1,0
+Sensors Read Done & No. of function loops = 
+9
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+14021,85.00,22.00,3.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+9,9,1,0
+Sensors Read Done & No. of function loops = 
+10
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+15521,86.00,74.00,42.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+10,10,1,0
+Sensors Read Done & No. of function loops = 
+11
+
+
+
+
+
+353
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+530631,64.00,80.00,46.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+353,353,8,0
+Sensors Read Done & No. of function loops = 
+354
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+532131,64.00,0.00,46.00
+Hello from Sending to cloud task
+{"Ultrasonic":97.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":28.00,"acc_X":91.00,"acc_Y":74.00,"acc_Z":72.00,"Temperature":90.00,"Humidity":49.00,"temperatureC":64.00,"SiTemp":46.00,"SiHum":0.00,"Sensors_Status":354.00,"Msgs_to_cloud":8.00,"Msgs_to_card":354.00,"Reconnects":0.00,"cardFull":0.00}
+Pushing data to the cloud
+
+Msg Sent to cloud
+total Msgs Sent to cloud
+9
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+354,354,9,0
+Sensors Read Done & No. of function loops = 
+355
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+533631,73.00,57.00,56.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+355,355,9,0
+Sensors Read Done & No. of function loops = 
+356
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+535131,58.00,56.00,48.00
+Hello from Sending to cloud task
+{"Ultrasonic":41.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":63.00,"acc_X":3.00,"acc_Y":83.00,"acc_Z":38.00,"Temperature":89.00,"Humidity":90.00,"temperatureC":58.00,"SiTemp":48.00,"SiHum":56.00,"Sensors_Status":356.00,"Msgs_to_cloud":9.00,"Msgs_to_card":356.00,"Reconnects":0.00,"cardFull":0.00}From Debug to CSV Function
+Pushing data to the cloud
+
+
+Msg Sent to cloudTime , Sensors , SD card  , DataTocloud , increment, Reconnects
+total Msgs Sent to cloud
+356,356,9,0
+10
+
+
+
+WiFi connected: D-Link
+WiFi connected: 192.168.1.7
+MQTT Broker connected
+Hello from Sending to cloud task
+Attempting MQTT connection...
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+57,57,1,0
+Sensors Read Done & No. of function loops = 
+58
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+87730,9.00,59.00,40.00
+Connected
+{"Ultrasonic":34.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":44.00,"acc_X":89.00,"acc_Y":67.00,"acc_Z":44.00,"Temperature":19.00,"Humidity":48.00,"temperatureC":9.00,"SiTemp":40.00,"SiHum":59.00,"Sensors_Status":58.00,"Msgs_to_cloud":1.00,"Msgs_to_card":58.00,"Reconnects":0.00,"cardFull":0.00}
+Pushing data to the cloud
+
+Msg Sent to cloud
+total Msgs Sent to cloud
+2
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+58,58,2,0
+Sensors Read Done & No. of function loops = 
+59
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+89230,34.00,97.00,4.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+59,59,2,0
+Sensors Read Done & No. of function loops = 
+60
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+90730,36.00,57.00,24.00
+Hello from Sending to cloud task
+{"Ultrasonic":52.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":52.00,"acc_X":62.00,"acc_Y":54.00,"acc_Z":21.00,"Temperature":3.00,"Humidity":86.00,"temperatureC":36.00,"SiTemp":24.00,"SiHum":57.00,"Sensors_Status":60.00,"Msgs_to_cloud":2.00,"Msgs_to_card":60.00,"Reconnects":0.00,"cardFull":0.00}
+Pushing data to the cloud
+
+Msg Sent to cloud
+total Msgs Sent to cloud
+3
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+60,60,3,0
+Sensors Read Done & No. of function loops = 
+61
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+92230,91.00,65.00,0.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+61,61,3,0
+Sensors Read Done & No. of function loops = 
+62
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+93730,36.00,23.00,5.00
+Hello from Sending to cloud task
+{"Ultrasonic":22.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":56.00,"acc_X":99.00,"acc_Y":21.00,"acc_Z":15.00,"Temperature":79.00,"Humidity":75.00,"temperatureC":36.00,"SiTemp":5.00,"SiHum":23.00,"Sensors_Status":62.00,"Msgs_to_cloud":3.00,"Msgs_to_card":62.00,"Reconnects":0.00,"cardFull":0.00}
+Pushing data to the cloud
+
+Msg Sent to cloud
+total Msgs Sent to cloud
+4
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+62,62,4,0
+Sensors Read Done & No. of function loops = 
+63
+From Data to CSV Function
+Time ,DSTemp , SiTemp , SiHum 
+95230,7.00,27.00,65.00
+From Debug to CSV Function
+Time , Sensors , SD card  , DataTocloud , increment, Reconnects
+63,63,4,0
+Sensors Read Done & No. of function loops = 
+64

@@ -342,8 +342,20 @@ TaskHandle_t SensorsDataTask;
 void Task1code( void * pvParameters ){
   while (true){
     
-      
+         Serial.println("Hello from Sending to cloud task");
+      if (!client.connected()) {
+    reconnect();
+  }
       DataToCloud();
+
+         client.publish(topic, payload);
+  client.loop();
+      Serial.println("");
+    Serial.println("Msg Sent to cloud");
+    msgs_cloud ++ ;
+    Serial.println("total Msgs Sent to cloud");
+    Serial.println(msgs_cloud);
+    
       delay(3000); // task repeat every number of milliseconds
   }
 }
@@ -450,13 +462,7 @@ void DataToCloud() {
   //boolean rc = mqttClient.publish("myTopic", "myMessage");
 
   */
-   client.publish(topic, payload);
-  client.loop();
-      Serial.println("");
-    Serial.println("Msg Sent to cloud");
-    msgs_cloud ++ ;
-    Serial.println("total Msgs Sent to cloud");
-    Serial.println(msgs_cloud);
+
   
     //delay(1000); // task repeat every number of milliseconds
 
