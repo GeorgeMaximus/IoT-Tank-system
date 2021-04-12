@@ -96,7 +96,7 @@ String dataStr = "";
 char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure"; // for the CSV for data logger
 
 String statusRec = "";
-char statusStr[100] = "Time , Sensors , SD card  , DataTocloud , increment, Reconnects";   // for the CSV for Debug messages
+char statusStr[100] = "Sensors , SD card  , DataTocloud , Reconnects";   // for the CSV for Debug messages
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -289,9 +289,9 @@ void DataToCloud() {
   dtostrf(sensor2, 4, 2, str_sensor2);
   dtostrf(sensor3, 4, 2, str_sensor3);
   dtostrf(pressureV, 4, 2, str_sensor4);
-  dtostrf(accelerometer_x, 4, 2, str_accx);
-  dtostrf(accelerometer_y, 4, 2, str_accy);
-  dtostrf(accelerometer_z, 4, 2, str_accz);
+  //dtostrf(accelerometer_x, 4, 2, str_accx);
+  //dtostrf(accelerometer_y, 4, 2, str_accy);
+  //dtostrf(accelerometer_z, 4, 2, str_accz);
   dtostrf(Temperature, 4, 2, str_temp);
   dtostrf(Humidity, 4, 2, str_humid);
   dtostrf(temperatureC, 4, 2, str_tempC);
@@ -310,9 +310,9 @@ void DataToCloud() {
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
   sprintf(payload, "%s,\"%s\":%s", payload, "Pressure", str_sensor4);
-  sprintf(payload, "%s,\"%s\":%s", payload, "acc_X", str_accx);
-  sprintf(payload, "%s,\"%s\":%s", payload, "acc_Y", str_accy);
-  sprintf(payload, "%s,\"%s\":%s", payload, "acc_Z", str_accz);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_X", str_accx);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Y", str_accy);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Z", str_accz);
   sprintf(payload, "%s,\"%s\":%s", payload, "Temperature", str_temp);
   sprintf(payload, "%s,\"%s\":%s", payload, "Humidity", str_humid);
   sprintf(payload, "%s,\"%s\":%s", payload, "temperatureC", str_tempC);
