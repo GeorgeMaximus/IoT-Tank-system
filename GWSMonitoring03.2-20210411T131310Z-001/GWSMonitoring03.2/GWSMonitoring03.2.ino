@@ -41,14 +41,7 @@
 #define ETH_PHY_POWER 12
 
 #include <ETH.h>
-///////////////////////////// Multible Threading /////////////////
-#include "Thread.h"
-//int ledPin = 2;
 
-//My simple Thread
-Thread myThread1 = Thread();
-Thread myThread2 = Thread();
-/////////////////////////////////////////////
 #include <PubSubClient.h>
 #include <DHT.h>
 #include "Configuration.h"    // this file is intended to switch differnt options for the software. Not well used at the moment.
@@ -117,7 +110,8 @@ int Count_Samples = 0;  // counts number of samples read from sensors
 
 ////////////////////////// Variables used to write CSV file to Sd Card ////////////////
 char dataStr[100] = "";
-char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure"; // for the CSV for data logger
+char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum "; // for the CSV for data logger
+//char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure"; // for the CSV for data logger
 
 char statusRec[100] = "";
 char statusStr[100] = "Time , Sensors , SD card  , DataTocloud , increment, Reconnects";   // for the CSV for Debug messages
@@ -441,15 +435,24 @@ void DataToCSV() {
   strcat( dataStr, buffer); //append the converted float
   strcat( dataStr, 0); //terminate correctly 
 */
+
+  // MSg to be sent to the sd card or serial
+  dataStr = String(millis()) + "," + String(temperatureC) + ","+ String(SiTemp) + ","+ String(SiHum);
+
+
   Serial.println(HeadStr);
   Serial.println(dataStr);
+
+  /* Uncomment this if you want to add the SD card funtionality
 
     // SD card send data 
   appendFile(SD_MMC, "/datalogger.csv", dataStr);
   Serial.print("SD_MMC Card DataLogger.csv : ");
   Serial.print(dataStr);
   Serial.print("  Done  ");
- 
+ */
+
+
  msgs_card ++ ;
 
 }
@@ -649,6 +652,12 @@ void appendFile(fs::FS &fs, const char * path, const char * message){
  * Setup
  ****************************************/
 void setup() {
+
+ Serial.begin(115200); // initializing a serial monitor 
+
+    // CSV Threading 
+    myThread1.onRun(DataToCSV);
+  myThread1.setInterval(500);
   ////////////////////////  Using the Ethernet & Wifi Integration //////////
       // delete old config
   WiFi.disconnect(true);
@@ -675,8 +684,7 @@ void setup() {
   Serial.println("Wait for WiFi... ");
     
   ///////////////////////////////////////////// Multiple Threading ////////
-  myThread1.onRun(DataToCSV);
-  myThread1.setInterval(500);
+
 
   myThread2.onRun(DataToCloud);
   myThread2.setInterval(1000);
@@ -713,6 +721,8 @@ void setup() {
 
   
 /////////////////////////////////////// SD card ////////////////
+/*
+
   if(!SD_MMC.begin()){
       Serial.println("Card Mount Failed");
 //      return;
@@ -738,6 +748,12 @@ void setup() {
   uint64_t cardSize = SD_MMC.cardSize() / (1024 * 1024);
   Serial.printf("SD_MMC Card Size: %lluMB\n", cardSize);
 
+
+    */
+
+    /////////////////////////
+    
+
   // If we want to read the credentials from the Sd card uncomment the below section
   /*
   readFile(SD_MMC, "/ssid.txt");
@@ -755,6 +771,10 @@ void setup() {
   Serial.print(DEVICE_LABEL);
   Serial.print("  Done  ");
 */
+
+// Uncomment this if you are using SD capabilities
+
+/*
   // Check the capacity of the Card and if there is space we can write to it
       Serial.printf("Total space: %lluMB\n", SD_MMC.totalBytes() / (1024 * 1024));
     Serial.printf("Used space: %lluMB\n", SD_MMC.usedBytes() / (1024 * 1024));
@@ -778,7 +798,7 @@ void setup() {
     cardFull = 1 ;
   }
  
-
+*/
 
   // initializing the I/O
   pinMode(trigPin, OUTPUT);       // Sets the trigPin as an Output
