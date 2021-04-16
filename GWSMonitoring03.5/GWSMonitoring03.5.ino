@@ -43,56 +43,82 @@ String delCredential(PageArgument&);
 //#define WIFISSID "GeorgeMaximus" // Put your WifiSSID here
 //#define PASSWORD "maxi1234" // Put your wifi password here
 #define TOKEN "BBFF-l8gRwzQpEikMaXp3uAahxYodCzOX45" // Put your Ubidots' TOKEN
-#define MQTT_CLIENT_NAME "GRDuncanIoT32DhTTankMaximusesp32" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string; 
+#define MQTT_CLIENT_NAME "GRDuncanIoT32DhTTankMaximusesp66" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string; 
                                            //it should be a random and unique ascii string and different from all other devices
 
 /****************************************
  * Define Constants
  ****************************************/
-#define VARIABLE_LABEL "sensor" // Assing the variable label
-#define DEVICE_LABEL "espMaximus" // Assig the device label
+#define VARIABLE_LABEL "sensor2" // Assing the variable label
+#define DEVICE_LABEL "esp64" // Assig the device label
 
 #define SENSOR 12 // Set the GPIO12 as SENSOR
 
 char mqttBroker[]  = "industrial.api.ubidots.com";
-char payload[200];
+char payload[300];
 char topic[150];
 // Space to store values to send
-char str_sensor[10];
+char str_sensor1[10];
 char str_sensor2[10];
 char str_sensor3[10];
 char str_sensor4[10];
-char str_sensor5[10];
-char str_sensor6[10];
-char str_sensor7[10];
-char str_sensor8[10];
-char str_sensor9[10];
-char str_sensor10[10];
-char str_sensor11[10];
-char str_sensor12[10];
-char str_sensor13[10];
-char str_sensor14[10];
-char str_sensor15[10];
+char str_accx[10];
+char str_accy[10];
+char str_accz[10];
+char str_temp[10];
+char str_humid[10];
+char str_tempC[10];
+char str_humidSi[10];
+char str_tempSi[10];
+// debug variables 
+char str_dtc[10];
+char str_sensors[10];
+char str_card[10];
+char str_connects[10];
+char str_full[10];
+// debug increments 
+int msgs_cloud = 1; // number of msgs pushed to the cloud
+int msgs_card = 0 ; // number of msgs pushed to the card
+int msgs_sensors = 0; // counter of successful of data
+int cardFull = 0; // Initialize the Card as if it is free or full
 
 
-float sensor;
-float sensor2;
-float sensor3;
-float sensor4;
-float sensor5;
-float sensor6;
-float sensor7;
-float sensor8;
-float sensor9;
-float sensor10;
-float sensor11;
-float sensor12;
-float sensor13;
-float sensor14;
-float sensor15;
-int Reconnects = 0 ;
+/****************************************
+ * Error Counters
+ ****************************************/
+int Reconnects = 0;     // counts number of WiFi reconnects
+int Count_Samples = 0;  // counts number of samples read from sensors
+
+
+////////////////////////// Variables used to write CSV file to Sd Card ////////////////
+String dataStr = "";
+//char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum "; // for the CSV for data logger
+char HeadStr[100] = "Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure"; // for the CSV for data logger
+
+String statusRec = "";
+char statusStr[100] = "Sensors , SD card  , DataTocloud , Reconnects";   // for the CSV for Debug messages
+
 
 ////////////////////////////////////////////////////////////////////////
+
+
+int16_t accelerometer_x, accelerometer_y, accelerometer_z; // variables for accelerometer raw data
+int16_t gyro_x, gyro_y, gyro_z; // variables for gyro raw data
+int16_t temperature; // variables for temperature data
+float sensor2;
+float sensor3;
+float Temperature;
+float Humidity;
+//long duration;    // This are variables for the Ultrasonic readings
+int distance;
+float sensor1 ;     //
+float temperatureC;
+float SiTemp;
+float SiHum;
+/////// Pressure Sensor value
+float pressureV;    // value from ADC
+
+/////////////////////////////////////////////////////////
 /****************************************
  * Auxiliar Functions
  ****************************************/
@@ -124,7 +150,7 @@ void reconnect() {
       Serial.println("Reconnects = ");
       Serial.println(Reconnects);
       // Wait 2 seconds before retrying
-      if (Reconnects > 3){
+      if (Reconnects > 8){
         Reconnects = 0;
         ESP.restart();
       }
@@ -249,62 +275,173 @@ String delCredential(PageArgument& args) {
   return "";
 }
 
+////////////////////////////// Functions //////////////////////
+
+void DataToCloud() {
+  if (!client.connected()) {
+    reconnect();
+  }
+
+ sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);  // we changed this line with the device ID 
+  sprintf(payload, "%s", ""); // Cleans the payload
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
+  dtostrf(sensor1, 4, 2, str_sensor1);
+  dtostrf(sensor2, 4, 2, str_sensor2);
+  dtostrf(sensor3, 4, 2, str_sensor3);
+  dtostrf(pressureV, 4, 2, str_sensor4);
+  //dtostrf(accelerometer_x, 4, 2, str_accx);
+  //dtostrf(accelerometer_y, 4, 2, str_accy);
+  //dtostrf(accelerometer_z, 4, 2, str_accz);
+  dtostrf(Temperature, 4, 2, str_temp);
+  dtostrf(Humidity, 4, 2, str_humid);
+  dtostrf(temperatureC, 4, 2, str_tempC);
+  dtostrf(SiHum, 4, 2, str_humidSi);
+  dtostrf(SiTemp, 4, 2, str_tempSi);
+// debug variables to be assigned
+    dtostrf(msgs_sensors, 4, 2, str_sensors);
+  dtostrf(msgs_cloud, 4, 2, str_dtc);
+  dtostrf(msgs_card, 4, 2, str_card);
+  dtostrf(Reconnects, 4, 2, str_connects);
+  dtostrf(cardFull, 4, 2, str_full);
+  
+  // This section is to send the data measured from the esp32 to the ubidots
+  sprintf(payload, "{\"");
+  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor1);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Pressure", str_sensor4);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_X", str_accx);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Y", str_accy);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Z", str_accz);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Temperature", str_temp);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Humidity", str_humid);
+  sprintf(payload, "%s,\"%s\":%s", payload, "temperatureC", str_tempC);
+  sprintf(payload, "%s,\"%s\":%s", payload, "SiTemp", str_humidSi);
+  sprintf(payload, "%s,\"%s\":%s", payload, "SiHum", str_tempSi);
+// debug variables to be assigned
+
+  sprintf(payload, "%s,\"%s\":%s", payload, "Sensors_Status", str_sensors);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_cloud", str_dtc);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_card", str_card);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Reconnects", str_connects);
+  sprintf(payload, "%s,\"%s\":%s", payload, "cardFull", str_full);
+  sprintf(payload, "%s}", payload);
+  Serial.println(payload);
+  Serial.println("Pushing data to the cloud");
+
+  Serial.println("Publishing data to Ubidots Cloud");
+  client.publish(topic, payload);
+  client.loop();
+  //delay(1000);
+}
+
+
+void ReadAllSensors(){    // Read all the sensors 
+    float sensor2 = random(100);  // defining the variable for gyroscope data in x-axis
+  float sensor3 = random(100);  // defining the variable for gyroscope data in y-axis
+  pressureV =  random(100);
+  Temperature = random(100);
+  Humidity = random(100);
+  sensor1 = random(100);
+  SiHum = random(100);
+  SiTemp = random(100);
+  temperatureC = random(100);
+  accelerometer_y = random(100);
+  accelerometer_z = random(100);
+  accelerometer_x= random(100);
+  
+  cardFull = 0;
+   msgs_sensors ++ ;
+       Serial.println("Sensors Read Done & No. of function loops = ");
+    Serial.println(msgs_sensors);
+}
+
+void DataToCSV() {
+  //dataStr[0] = 0; //clean out string
+  Serial.println("From Data to CSV Function");
+   String SSupd = String(millis()) + "," + String(temperatureC) + ","+ String(SiTemp) + ","+ String(SiHum);
+   String SSupb = String(Temperature) + "," + String(Humidity) + ","+ String(pressureV);
+   
+ dataStr = SSupd + "," + SSupb ;
+  Serial.println(HeadStr);
+  Serial.println(dataStr);
+  msgs_card ++ ;
+  
+}
+
+void DebugToCSV() {
+  Serial.println("From Debug to CSV Function");
+   
+   String SSup = String(msgs_sensors) + "," + String(msgs_card) + ","+ String(msgs_cloud) + ","+ String(Reconnects);
+
+  statusRec = SSup;
+  Serial.println(statusStr);
+  Serial.println(statusRec);
+}
+
 //////////////////////////////// Multi Tasking /////////////////////
 TaskHandle_t DataToCloudTask;
 TaskHandle_t SensorsDataTask;
 
 void Task1code( void * pvParameters ){
   while (true){
-    Serial.println("Hello from first task");
-      if (!client.connected()) {
+      //DataToCloud ();
+
+ if (!client.connected()) {
     reconnect();
   }
 
-  sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);
+ sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);  // we changed this line with the device ID 
   sprintf(payload, "%s", ""); // Cleans the payload
-  //sprintf(payload, "{\"%s\":", VARIABLE_LABEL); // Adds the variable label
-  
-  //float sensor = random(500); 
-  
   /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
-  dtostrf(sensor, 4, 2, str_sensor);
+  dtostrf(sensor1, 4, 2, str_sensor1);
   dtostrf(sensor2, 4, 2, str_sensor2);
   dtostrf(sensor3, 4, 2, str_sensor3);
-    dtostrf(sensor4, 4, 2, str_sensor4);
-  dtostrf(sensor5, 4, 2, str_sensor5);
-  dtostrf(sensor6, 4, 2, str_sensor6);
-    dtostrf(sensor7, 4, 2, str_sensor7);
-  dtostrf(sensor8, 4, 2, str_sensor8);
-  dtostrf(sensor9, 4, 2, str_sensor9);
-   dtostrf(sensor10, 4, 2, str_sensor10);
-  dtostrf(sensor11, 4, 2, str_sensor11);
-  dtostrf(sensor12, 4, 2, str_sensor12);
-    dtostrf(sensor13, 4, 2, str_sensor13);
-  dtostrf(sensor14, 4, 2, str_sensor14);
-  dtostrf(sensor15, 4, 2, str_sensor15);
+  dtostrf(pressureV, 4, 2, str_sensor4);
+  //dtostrf(accelerometer_x, 4, 2, str_accx);
+  //dtostrf(accelerometer_y, 4, 2, str_accy);
+  //dtostrf(accelerometer_z, 4, 2, str_accz);
+  dtostrf(Temperature, 4, 2, str_temp);
+  dtostrf(Humidity, 4, 2, str_humid);
+  dtostrf(temperatureC, 4, 2, str_tempC);
+  dtostrf(SiHum, 4, 2, str_humidSi);
+  dtostrf(SiTemp, 4, 2, str_tempSi);
+// debug variables to be assigned
+    dtostrf(msgs_sensors, 4, 2, str_sensors);
+  dtostrf(msgs_cloud, 4, 2, str_dtc);
+  dtostrf(msgs_card, 4, 2, str_card);
+  dtostrf(Reconnects, 4, 2, str_connects);
+  dtostrf(cardFull, 4, 2, str_full);
   
-    sprintf(payload, "{\"");
-  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor);
+  // This section is to send the data measured from the esp32 to the ubidots
+  sprintf(payload, "{\"");
+  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor1);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
-   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic1", str_sensor4);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y1", str_sensor5);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X1", str_sensor6);
-  //  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic2", str_sensor7);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y2", str_sensor8);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X2", str_sensor9);
-    //1sprintf(payload, "%s%s\":%s", payload, "Ultrasonic3", str_sensor10);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y3", str_sensor11);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X3", str_sensor12);
-   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic4", str_sensor13);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y4", str_sensor14);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X4", str_sensor15);
-    sprintf(payload, "%s}", payload);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Pressure", str_sensor4);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_X", str_accx);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Y", str_accy);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Z", str_accz);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Temperature", str_temp);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Humidity", str_humid);
+  sprintf(payload, "%s,\"%s\":%s", payload, "temperatureC", str_tempC);
+  sprintf(payload, "%s,\"%s\":%s", payload, "SiTemp", str_humidSi);
+  sprintf(payload, "%s,\"%s\":%s", payload, "SiHum", str_tempSi);
+// debug variables to be assigned
+
+  sprintf(payload, "%s,\"%s\":%s", payload, "Sensors_Status", str_sensors);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_cloud", str_dtc);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_card", str_card);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Reconnects", str_connects);
+  sprintf(payload, "%s,\"%s\":%s", payload, "cardFull", str_full);
+  sprintf(payload, "%s}", payload);
   Serial.println(payload);
+  Serial.println("Pushing data to the cloud");
+
   Serial.println("Publishing data to Ubidots Cloud");
   client.publish(topic, payload);
   client.loop();
-  
+      
     delay(3000); // task repeat every number of milliseconds
 
   }
@@ -313,26 +450,11 @@ void Task1code( void * pvParameters ){
 void Task2code( void * pvParameters ){
   while (true){
     Serial.println("Hello from Second task");
-    
-      sensor = random(500); 
-  sensor2 = random(500); 
-  sensor3 = random(500); 
-      
-      sensor4 = random(500); 
-  sensor5 = random(500); 
-  sensor6 = random(500); 
-      
-  sensor7 = random(500); 
-  sensor8 = random(500); 
-  sensor9 = random(500); 
-      
-      sensor10 = random(500); 
-  sensor11 = random(500); 
-  sensor12 = random(500); 
-      
-      sensor13 = random(500); 
-  sensor14 = random(500); 
-  sensor15 = random(500); 
+      ReadAllSensors();
+    delay(500);
+    DataToCSV();
+     delay(500);
+    DebugToCSV();
   Serial.println("Sensors data collected");
   
     delay(1000);  // task repeat every number of milliseconds
@@ -375,20 +497,14 @@ void setup() {
     Serial.println("WiFi connected: " + WiFi.localIP().toString());
   }
 
+
+
 //////////////// MQTT Ubidots Initiaization //////////
     client.setServer(mqttBroker, 1883);
     Serial.println("MQTT Broker connected" );
   client.setCallback(callback);  
 
-    //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
-  xTaskCreatePinnedToCore(
-     Task1code,    //Task function.
-     "DataToCloudTask", //name of task
-     10000, //Stack size of task
-     NULL, //parameter of the task
-     1, //priority of the task
-     &DataToCloudTask, //Task handle to keep track of created task
-     0); //pin task to core 0
+
 
 }
 
@@ -396,38 +512,4 @@ void loop() {
  // DataCollection();
 //  DataToCloud();
     Portal.handleClient();
-}
-
-void DataCollection(){
-  sensor = random(500); 
-  sensor2 = random(500); 
-  sensor3 = random(500); 
-  
-}
-
-void DataToCloud() {
-  if (!client.connected()) {
-    reconnect();
-  }
-
-  sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);
-  sprintf(payload, "%s", ""); // Cleans the payload
-  //sprintf(payload, "{\"%s\":", VARIABLE_LABEL); // Adds the variable label
-  
-  //float sensor = random(500); 
-  
-  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
-  dtostrf(sensor, 4, 2, str_sensor);
-  dtostrf(sensor2, 4, 2, str_sensor2);
-  dtostrf(sensor3, 4, 2, str_sensor3);
-    sprintf(payload, "{\"");
-  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
-    sprintf(payload, "%s}", payload);
-  Serial.println(payload);
-  Serial.println("Publishing data to Ubidots Cloud");
-  client.publish(topic, payload);
-  client.loop();
-  delay(1000);
 }

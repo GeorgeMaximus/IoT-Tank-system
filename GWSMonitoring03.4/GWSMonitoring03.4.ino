@@ -43,7 +43,7 @@ String delCredential(PageArgument&);
 //#define WIFISSID "GeorgeMaximus" // Put your WifiSSID here
 //#define PASSWORD "maxi1234" // Put your wifi password here
 #define TOKEN "BBFF-l8gRwzQpEikMaXp3uAahxYodCzOX45" // Put your Ubidots' TOKEN
-#define MQTT_CLIENT_NAME "GRDuncanIoT32DhTTankMaximusesp66" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string; 
+#define MQTT_CLIENT_NAME "GRDuncanIoT32Maxi66" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string; 
                                            //it should be a random and unique ascii string and different from all other devices
 
 /****************************************
@@ -298,14 +298,14 @@ void DataToCloud() {
   dtostrf(SiHum, 4, 2, str_humidSi);
   dtostrf(SiTemp, 4, 2, str_tempSi);
 // debug variables to be assigned
-    dtostrf(msgs_sensors, 4, 2, str_sensors);
-  dtostrf(msgs_cloud, 4, 2, str_dtc);
-  dtostrf(msgs_card, 4, 2, str_card);
-  dtostrf(Reconnects, 4, 2, str_connects);
+ //   dtostrf(msgs_sensors, 4, 2, str_sensors);
+ // dtostrf(msgs_cloud, 4, 2, str_dtc);
+ // dtostrf(msgs_card, 4, 2, str_card);
+ // dtostrf(Reconnects, 4, 2, str_connects);
   dtostrf(cardFull, 4, 2, str_full);
   
   // This section is to send the data measured from the esp32 to the ubidots
-  sprintf(payload, "{\"");
+  sprintf(payload, "{");
   sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor1);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
@@ -320,10 +320,10 @@ void DataToCloud() {
   sprintf(payload, "%s,\"%s\":%s", payload, "SiHum", str_tempSi);
 // debug variables to be assigned
 
-  sprintf(payload, "%s,\"%s\":%s", payload, "Sensors_Status", str_sensors);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_cloud", str_dtc);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_card", str_card);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Reconnects", str_connects);
+//  sprintf(payload, "%s,\"%s\":%s", payload, "Sensors_Status", str_sensors);
+ // sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_cloud", str_dtc);
+ // sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_card", str_card);
+ // sprintf(payload, "%s,\"%s\":%s", payload, "Reconnects", str_connects);
   sprintf(payload, "%s,\"%s\":%s", payload, "cardFull", str_full);
   sprintf(payload, "%s}", payload);
   Serial.println(payload);

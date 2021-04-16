@@ -56,6 +56,7 @@ String delCredential(PageArgument&);
 
 char mqttBroker[]  = "industrial.api.ubidots.com";
 char payload[200];
+char payload2[200];
 char topic[150];
 // Space to store values to send
 char str_sensor[10];
@@ -255,56 +256,8 @@ TaskHandle_t SensorsDataTask;
 
 void Task1code( void * pvParameters ){
   while (true){
-    Serial.println("Hello from first task");
-      if (!client.connected()) {
-    reconnect();
-  }
 
-  sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);
-  sprintf(payload, "%s", ""); // Cleans the payload
-  //sprintf(payload, "{\"%s\":", VARIABLE_LABEL); // Adds the variable label
-  
-  //float sensor = random(500); 
-  
-  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
-  dtostrf(sensor, 4, 2, str_sensor);
-  dtostrf(sensor2, 4, 2, str_sensor2);
-  dtostrf(sensor3, 4, 2, str_sensor3);
-    dtostrf(sensor4, 4, 2, str_sensor4);
-  dtostrf(sensor5, 4, 2, str_sensor5);
-  dtostrf(sensor6, 4, 2, str_sensor6);
-    dtostrf(sensor7, 4, 2, str_sensor7);
-  dtostrf(sensor8, 4, 2, str_sensor8);
-  dtostrf(sensor9, 4, 2, str_sensor9);
-   dtostrf(sensor10, 4, 2, str_sensor10);
-  dtostrf(sensor11, 4, 2, str_sensor11);
-  dtostrf(sensor12, 4, 2, str_sensor12);
-    dtostrf(sensor13, 4, 2, str_sensor13);
-  dtostrf(sensor14, 4, 2, str_sensor14);
-  dtostrf(sensor15, 4, 2, str_sensor15);
-  
-    sprintf(payload, "{\"");
-  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
-   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic1", str_sensor4);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y1", str_sensor5);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X1", str_sensor6);
-  //  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic2", str_sensor7);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y2", str_sensor8);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X2", str_sensor9);
-    //1sprintf(payload, "%s%s\":%s", payload, "Ultrasonic3", str_sensor10);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y3", str_sensor11);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X3", str_sensor12);
-   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic4", str_sensor13);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y4", str_sensor14);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X4", str_sensor15);
-    sprintf(payload, "%s}", payload);
-  Serial.println(payload);
-  Serial.println("Publishing data to Ubidots Cloud");
-  client.publish(topic, payload);
-  client.loop();
-  
+  DataToCloud();
     delay(3000); // task repeat every number of milliseconds
 
   }
@@ -406,7 +359,8 @@ void DataCollection(){
 }
 
 void DataToCloud() {
-  if (!client.connected()) {
+    Serial.println("Hello from first task");
+      if (!client.connected()) {
     reconnect();
   }
 
@@ -420,14 +374,65 @@ void DataToCloud() {
   dtostrf(sensor, 4, 2, str_sensor);
   dtostrf(sensor2, 4, 2, str_sensor2);
   dtostrf(sensor3, 4, 2, str_sensor3);
+    dtostrf(sensor4, 4, 2, str_sensor4);
+  dtostrf(sensor5, 4, 2, str_sensor5);
+  dtostrf(sensor6, 4, 2, str_sensor6);
+    dtostrf(sensor7, 4, 2, str_sensor7);
+  dtostrf(sensor8, 4, 2, str_sensor8);
+  dtostrf(sensor9, 4, 2, str_sensor9);
+   dtostrf(sensor10, 4, 2, str_sensor10);
+  dtostrf(sensor11, 4, 2, str_sensor11);
+  dtostrf(sensor12, 4, 2, str_sensor12);
+    dtostrf(sensor13, 4, 2, str_sensor13);
+  dtostrf(sensor14, 4, 2, str_sensor14);
+  dtostrf(sensor15, 4, 2, str_sensor15);
+  
     sprintf(payload, "{\"");
   sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
+   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic1", str_sensor4);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y1", str_sensor5);
+ // sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X1", str_sensor6);
+  //  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic2", str_sensor7);
+ // sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y2", str_sensor8);
+ // sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X2", str_sensor9);
+    //1sprintf(payload, "%s%s\":%s", payload, "Ultrasonic3", str_sensor10);
+ // sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y3", str_sensor11);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X3", str_sensor12);
+   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic4", str_sensor13);
+ // sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y4", str_sensor14);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X4", str_sensor15);
     sprintf(payload, "%s}", payload);
   Serial.println(payload);
-  Serial.println("Publishing data to Ubidots Cloud");
+  Serial.println("Publishing data to Ubidots Cloud Packet 1");
   client.publish(topic, payload);
+
+delay ( 200 ) ;
+ sprintf(payload, "%s", ""); // Cleans the payload
+    sprintf(payload, "{\"");
+  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic2", str_sensor6);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y2", str_sensor7);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X2", str_sensor8);
+   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic1", str_sensor4);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y3", str_sensor9);
+      sprintf(payload, "%s}", payload);
+  Serial.println(payload);
+  Serial.println("Publishing data to Ubidots Cloud Packet 2");
+  client.publish(topic, payload);
+
+  delay ( 200 ) ;
+ sprintf(payload, "%s", ""); // Cleans the payload
+    sprintf(payload, "{\"");
+  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic3", str_sensor10);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y3", str_sensor11);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X3", str_sensor12);
+   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic1", str_sensor4);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y4", str_sensor13);
+      sprintf(payload, "%s}", payload);
+  Serial.println(payload);
+  Serial.println("Publishing data to Ubidots Cloud Packet 3");
+  client.publish(topic, payload);
+  
   client.loop();
-  delay(1000);
 }

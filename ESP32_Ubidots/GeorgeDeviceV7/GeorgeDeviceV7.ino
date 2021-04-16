@@ -55,41 +55,16 @@ String delCredential(PageArgument&);
 #define SENSOR 12 // Set the GPIO12 as SENSOR
 
 char mqttBroker[]  = "industrial.api.ubidots.com";
-char payload[200];
+char payload[100];
 char topic[150];
 // Space to store values to send
 char str_sensor[10];
 char str_sensor2[10];
 char str_sensor3[10];
-char str_sensor4[10];
-char str_sensor5[10];
-char str_sensor6[10];
-char str_sensor7[10];
-char str_sensor8[10];
-char str_sensor9[10];
-char str_sensor10[10];
-char str_sensor11[10];
-char str_sensor12[10];
-char str_sensor13[10];
-char str_sensor14[10];
-char str_sensor15[10];
-
 
 float sensor;
 float sensor2;
 float sensor3;
-float sensor4;
-float sensor5;
-float sensor6;
-float sensor7;
-float sensor8;
-float sensor9;
-float sensor10;
-float sensor11;
-float sensor12;
-float sensor13;
-float sensor14;
-float sensor15;
 int Reconnects = 0 ;
 
 ////////////////////////////////////////////////////////////////////////
@@ -270,35 +245,10 @@ void Task1code( void * pvParameters ){
   dtostrf(sensor, 4, 2, str_sensor);
   dtostrf(sensor2, 4, 2, str_sensor2);
   dtostrf(sensor3, 4, 2, str_sensor3);
-    dtostrf(sensor4, 4, 2, str_sensor4);
-  dtostrf(sensor5, 4, 2, str_sensor5);
-  dtostrf(sensor6, 4, 2, str_sensor6);
-    dtostrf(sensor7, 4, 2, str_sensor7);
-  dtostrf(sensor8, 4, 2, str_sensor8);
-  dtostrf(sensor9, 4, 2, str_sensor9);
-   dtostrf(sensor10, 4, 2, str_sensor10);
-  dtostrf(sensor11, 4, 2, str_sensor11);
-  dtostrf(sensor12, 4, 2, str_sensor12);
-    dtostrf(sensor13, 4, 2, str_sensor13);
-  dtostrf(sensor14, 4, 2, str_sensor14);
-  dtostrf(sensor15, 4, 2, str_sensor15);
-  
     sprintf(payload, "{\"");
   sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
   sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
-   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic1", str_sensor4);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y1", str_sensor5);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X1", str_sensor6);
-  //  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic2", str_sensor7);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y2", str_sensor8);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X2", str_sensor9);
-    //1sprintf(payload, "%s%s\":%s", payload, "Ultrasonic3", str_sensor10);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y3", str_sensor11);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X3", str_sensor12);
-   // sprintf(payload, "%s%s\":%s", payload, "Ultrasonic4", str_sensor13);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y4", str_sensor14);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X4", str_sensor15);
     sprintf(payload, "%s}", payload);
   Serial.println(payload);
   Serial.println("Publishing data to Ubidots Cloud");
@@ -317,22 +267,6 @@ void Task2code( void * pvParameters ){
       sensor = random(500); 
   sensor2 = random(500); 
   sensor3 = random(500); 
-      
-      sensor4 = random(500); 
-  sensor5 = random(500); 
-  sensor6 = random(500); 
-      
-  sensor7 = random(500); 
-  sensor8 = random(500); 
-  sensor9 = random(500); 
-      
-      sensor10 = random(500); 
-  sensor11 = random(500); 
-  sensor12 = random(500); 
-      
-      sensor13 = random(500); 
-  sensor14 = random(500); 
-  sensor15 = random(500); 
   Serial.println("Sensors data collected");
   
     delay(1000);  // task repeat every number of milliseconds

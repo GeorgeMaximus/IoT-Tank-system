@@ -1,0 +1,244 @@
+Hello from first task
+{"Ultrasonic":275.00,"Gyro_Y":72.00,"Gyro_X":203.00,"Gyro_Y1":261.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":457.00,"Gyro_Y2":418.00,"Gyro_X2":111.00,"Gyro_Y3":205.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":258.00,"Gyro_Y3":209.00,"Gyro_X3":199.00,"Gyro_Y4":37.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":499.00,"Gyro_Y":157.00,"Gyro_X":385.00,"Gyro_Y1":391.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":276.00,"Gyro_Y2":57.00,"Gyro_X2":14.00,"Gyro_Y3":35.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":260.00,"Gyro_Y3":81.00,"Gyro_X3":498.00,"Gyro_Y4":230.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":71.00,"Gyro_Y":62.00,"Gyro_X":338.00,"Gyro_Y1":201.00}
+Publishing data to Ubidots Cloud Packet 1
+Hello from Second task
+Sensors data collected
+{"Ultrasonic2":96.00,"Gyro_Y2":189.00,"Gyro_X2":93.00,"Gyro_Y3":250.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":169.00,"Gyro_Y3":264.00,"Gyro_X3":122.00,"Gyro_Y4":467.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":265.00,"Gyro_Y":471.00,"Gyro_X":459.00,"Gyro_Y1":188.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":371.00,"Gyro_Y2":352.00,"Gyro_X2":16.00,"Gyro_Y3":21.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":73.00,"Gyro_Y3":430.00,"Gyro_X3":311.00,"Gyro_Y4":256.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":471.00,"Gyro_Y":480.00,"Gyro_X":460.00,"Gyro_Y1":361.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":143.00,"Gyro_Y2":364.00,"Gyro_X2":33.00,"Gyro_Y3":326.00}
+Publishing data to Ubidots Cloud Packet 2
+Hello from Second task
+Sensors data collected
+{"Ultrasonic3":365.00,"Gyro_Y3":406.00,"Gyro_X3":45.00,"Gyro_Y4":3.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":145.00,"Gyro_Y":168.00,"Gyro_X":112.00,"Gyro_Y1":16.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":86.00,"Gyro_Y2":117.00,"Gyro_X2":199.00,"Gyro_Y3":433.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":8.00,"Gyro_Y3":48.00,"Gyro_X3":373.00,"Gyro_Y4":372.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":423.00,"Gyro_Y":265.00,"Gyro_X":210.00,"Gyro_Y1":11.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":480.00,"Gyro_Y2":328.00,"Gyro_X2":41.00,"Gyro_Y3":420.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":111.00,"Gyro_Y3":384.00,"Gyro_X3":156.00,"Gyro_Y4":428.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":281.00,"Gyro_Y":431.00,"Gyro_X":450.00,"Gyro_Y1":419.00}
+Publishing data to Ubidots Cloud Packet 1
+Hello from Second task
+Sensors data collected
+{"Ultrasonic2":90.00,"Gyro_Y2":405.00,"Gyro_X2":271.00,"Gyro_Y3":99.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":493.00,"Gyro_Y3":91.00,"Gyro_X3":239.00,"Gyro_Y4":231.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":54.00,"Gyro_Y":232.00,"Gyro_X":153.00,"Gyro_Y1":281.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":411.00,"Gyro_Y2":499.00,"Gyro_X2":292.00,"Gyro_Y3":261.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":138.00,"Gyro_Y3":160.00,"Gyro_X3":21.00,"Gyro_Y4":245.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":118.00,"Gyro_Y":270.00,"Gyro_X":327.00,"Gyro_Y1":477.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":71.00,"Gyro_Y2":385.00,"Gyro_X2":380.00,"Gyro_Y3":367.00}
+Publishing data to Ubidots Cloud Packet 2
+Hello from Second task
+Sensors data collected
+{"Ultrasonic3":447.00,"Gyro_Y3":217.00,"Gyro_X3":452.00,"Gyro_Y4":65.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":28.00,"Gyro_Y":155.00,"Gyro_X":63.00,"Gyro_Y1":94.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":216.00,"Gyro_Y2":376.00,"Gyro_X2":455.00,"Gyro_Y3":191.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":353.00,"Gyro_Y3":430.00,"Gyro_X3":293.00,"Gyro_Y4":199.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":443.00,"Gyro_Y":295.00,"Gyro_X":181.00,"Gyro_Y1":201.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":250.00,"Gyro_Y2":320.00,"Gyro_X2":438.00,"Gyro_Y3":122.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":443.00,"Gyro_Y3":437.00,"Gyro_X3":401.00,"Gyro_Y4":438.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":311.00,"Gyro_Y":437.00,"Gyro_X":142.00,"Gyro_Y1":56.00}
+Publishing data to Ubidots Cloud Packet 1
+Hello from Second task
+Sensors data collected
+{"Ultrasonic2":228.00,"Gyro_Y2":97.00,"Gyro_X2":190.00,"Gyro_Y3":312.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":127.00,"Gyro_Y3":451.00,"Gyro_X3":352.00,"Gyro_Y4":487.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":312.00,"Gyro_Y":309.00,"Gyro_X":44.00,"Gyro_Y1":65.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":412.00,"Gyro_Y2":319.00,"Gyro_X2":14.00,"Gyro_Y3":295.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":250.00,"Gyro_Y3":14.00,"Gyro_X3":89.00,"Gyro_Y4":364.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":366.00,"Gyro_Y":276.00,"Gyro_X":55.00,"Gyro_Y1":177.00}
+Publishing data to Ubidots Cloud Packet 1
+Hello from Second task
+Sensors data collected
+{"Ultrasonic2":149.00,"Gyro_Y2":37.00,"Gyro_X2":290.00,"Gyro_Y3":439.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":77.00,"Gyro_Y3":425.00,"Gyro_X3":227.00,"Gyro_Y4":211.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":174.00,"Gyro_Y":209.00,"Gyro_X":185.00,"Gyro_Y1":39.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":98.00,"Gyro_Y2":28.00,"Gyro_X2":465.00,"Gyro_Y3":387.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":171.00,"Gyro_Y3":77.00,"Gyro_X3":303.00,"Gyro_Y4":33.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":485.00,"Gyro_Y":176.00,"Gyro_X":483.00,"Gyro_Y1":73.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":109.00,"Gyro_Y2":219.00,"Gyro_X2":457.00,"Gyro_Y3":12.00}
+Publishing data to Ubidots Cloud Packet 2
+Hello from Second task
+Sensors data collected
+{"Ultrasonic3":159.00,"Gyro_Y3":16.00,"Gyro_X3":126.00,"Gyro_Y4":172.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from Second task
+Sensors data collected
+Hello from first task
+{"Ultrasonic":436.00,"Gyro_Y":7.00,"Gyro_X":339.00,"Gyro_Y1":341.00}
+Publishing data to Ubidots Cloud Packet 1
+{"Ultrasonic2":287.00,"Gyro_Y2":72.00,"Gyro_X2":357.00,"Gyro_Y3":297.00}
+Publishing data to Ubidots Cloud Packet 2
+{"Ultrasonic3":151.00,"Gyro_Y3":142.00,"Gyro_X3":323.00,"Gyro_Y4":473.00}
+Publishing data to Ubidots Cloud Packet 3
+Hello from Second task
+Sensors data collected
