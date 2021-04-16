@@ -14,6 +14,17 @@
   This sketch uses PageBuilder to support handling of operation pages.
 */
 
+
+/*
+ * This version working on my simulate devices and have the following fuctions & fully tested:
+ * Access point
+ * Wifi connectivity
+ * connecting multiple variables 
+ * Ubidots integration
+ * csv simulations
+ * Multitasking
+ */
+
 // Access Point SSID = espAp
 // Access point Pass = 12345678
 
