@@ -57,6 +57,17 @@ String delCredential(PageArgument&);
 #define MQTT_CLIENT_NAME "GRDuncanIoT32Maxi66" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string; 
                                            //it should be a random and unique ascii string and different from all other devices
 
+
+///////////////////// Ethernet 
+#include <SPI.h>
+#include <Ethernet.h>
+
+// Function prototypes
+void subscribeReceive(char* topic, byte* payload, unsigned int length);
+ 
+// Set your MAC address and IP address here
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+IPAddress ip(192, 168, 1, 160);
 /****************************************
  * Define Constants
  ****************************************/
@@ -134,7 +145,12 @@ float pressureV;    // value from ADC
  * Auxiliar Functions
  ****************************************/
 WiFiClient ubidots;
+EthernetClient ubidots;
 PubSubClient client(ubidots);
+
+// Ethernet and MQTT related objects
+//EthernetClient ethClient;
+//PubSubClient mqttClient(ethClient);
 
 void callback(char* topic, byte* payload, unsigned int length) {
   char p[length + 1];
