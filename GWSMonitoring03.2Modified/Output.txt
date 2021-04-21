@@ -1,109 +1,95 @@
+From Data to CSV Function
+Sensors data to be sent to CSV
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+115017,46.00,89.00,89.00,39.00,76.00,30.00
+From Debug to CSV Function
+Sensors data to be sent to CSV
+Sensors , SD card  , DataTocloud , Reconnects
+57,57,1,0
+Sensors data collected & Msgs to SD card ready
+Hello from Second task
 Sensors Read Done & No. of function loops = 
-13
-Data to cloud task ended
+58
+From Data to CSV Function
+Sensors data to be sent to CSV
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+117023,58.00,18.00,8.00,2.00,19.00,48.00
+From Debug to CSV Function
+Sensors data to be sent to CSV
+Sensors , SD card  , DataTocloud , Reconnects
+58,58,1,0
+Sensors data collected & Msgs to SD card ready
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+59
+From Data to CSV Function
+Sensors data to be sent to CSV
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+119029,70.00,89.00,4.00,36.00,23.00,74.00
+WiFi connected: D-Link
+WiFi connected: 192.168.1.10
+MQTT Broker connected
 Data to cloud task started
-{Ultrasonic":16.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":71.00}
+Attempting MQTT connection...
+From Debug to CSV Function
+Sensors data to be sent to CSV
+Sensors , SD card  , DataTocloud , Reconnects
+59,59,1,0
+Sensors data collected & Msgs to SD card ready
+Connected
+{Ultrasonic":88.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":74.00}
 Pushing data to the cloud
 Publishing data to Ubidots Cloud Packet 1
-{"Temperature":39.00,"Humidity":39.00,"temperatureC":88.00,"SiTemp":53.00,"SiHum":86.00}
+{"Temperature":36.00,"Humidity":23.00,"temperatureC":70.00,"SiTemp":4.00,"SiHum":89.00}
 Pushing data to the cloud
 Publishing data to Ubidots Cloud Packet 2
-From Data to CSV Function
-Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
-25526,88.00,86.00,53.00,39.00,39.00,71.00
-{"Sensors_Status":13.00,"Msgs_to_cloud":1.00,"Msgs_to_card":12.00,"Reconnects":0.00,"cardFull":0.00}
-Pushing data to the cloud
-Publishing data to Ubidots Cloud
-From Debug to CSV Function
-Sensors , SD card  , DataTocloud , Reconnects
-13,13,1,0
-Sensors data collected
 Hello from Second task
 Sensors Read Done & No. of function loops = 
-14
+60
+{"Sensors_Status":59.00,"Msgs_to_cloud":1.00,"Msgs_to_card":59.00,"Reconnects":0.00,"cardFull":0.00}
+Pushing data to the cloud
+Publishing data to Ubidots Cloud
 From Data to CSV Function
+Sensors data to be sent to CSV
 Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
-27526,48.00,34.00,68.00,89.00,47.00,19.00
+121035,70.00,33.00,57.00,44.00,84.00,88.00
 From Debug to CSV Function
+Sensors data to be sent to CSV
 Sensors , SD card  , DataTocloud , Reconnects
-14,14,1,0
-Sensors data collected
+60,60,2,0
+Sensors data collected & Msgs to SD card ready
+Hello from Second task
+Sensors Read Done & No. of function loops = 
+61
+From Data to CSV Function
+Sensors data to be sent to CSV
+Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
+123041,32.00,79.00,62.00,89.00,9.00,38.00
+From Debug to CSV Function
+Sensors data to be sent to CSV
+Sensors , SD card  , DataTocloud , Reconnects
+61,61,2,0
+Sensors data collected & Msgs to SD card ready
 Data to cloud task ended
 Data to cloud task started
-{Ultrasonic":46.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":19.00}
+{Ultrasonic":33.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":38.00}
 Pushing data to the cloud
 Publishing data to Ubidots Cloud Packet 1
-{"Temperature":89.00,"Humidity":47.00,"temperatureC":48.00,"SiTemp":68.00,"SiHum":34.00}
+{"Temperature":89.00,"Humidity":9.00,"temperatureC":32.00,"SiTemp":62.00,"SiHum":79.00}
 Pushing data to the cloud
 Publishing data to Ubidots Cloud Packet 2
-Hello from Second task
-Sensors Read Done & No. of function loops = 
-15
-{"Sensors_Status":14.00,"Msgs_to_cloud":1.00,"Msgs_to_card":14.00,"Reconnects":0.00,"cardFull":0.00}
-Pushing data to the cloud
-Publishing data to Ubidots Cloud
-From Data to CSV Function
-Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
-29526,76.00,68.00,98.00,7.00,80.00,1.00
-From Debug to CSV Function
-Sensors , SD card  , DataTocloud , Reconnects
-15,15,1,0
-Sensors data collected
-Hello from Second task
-Sensors Read Done & No. of function loops = 
-16
-From Data to CSV Function
-Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
-31526,43.00,80.00,0.00,53.00,49.00,70.00
-From Debug to CSV Function
-Sensors , SD card  , DataTocloud , Reconnects
-16,16,1,0
-Sensors data collected
-Data to cloud task ended
-Data to cloud task started
-{Ultrasonic":33.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":70.00}
-Pushing data to the cloud
-Publishing data to Ubidots Cloud Packet 1
-{"Temperature":53.00,"Humidity":49.00,"temperatureC":43.00,"SiTemp":0.00,"SiHum":80.00}
-Pushing data to the cloud
-Publishing data to Ubidots Cloud Packet 2
-{"Sensors_Status":16.00,"Msgs_to_cloud":1.00,"Msgs_to_card":16.00,"Reconnects":0.00,"cardFull":0.00}
+{"Sensors_Status":61.00,"Msgs_to_cloud":2.00,"Msgs_to_card":61.00,"Reconnects":0.00,"cardFull":0.00}
 Pushing data to the cloud
 Publishing data to Ubidots Cloud
 Hello from Second task
 Sensors Read Done & No. of function loops = 
-17
+62
 From Data to CSV Function
+Sensors data to be sent to CSV
 Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
-33526,23.00,9.00,21.00,47.00,87.00,11.00
+125047,40.00,8.00,30.00,17.00,59.00,15.00
 From Debug to CSV Function
+Sensors data to be sent to CSV
 Sensors , SD card  , DataTocloud , Reconnects
-17,17,1,0
-Sensors data collected
-Hello from Second task
-Sensors Read Done & No. of function loops = 
-18
-Data to cloud task ended
-Data to cloud task started
-{Ultrasonic":97.00,"Gyro_Y":0.00,"Gyro_X":0.00,"Pressure":11.00}
-Pushing data to the cloud
-Publishing data to Ubidots Cloud Packet 1
-From Data to CSV Function
-Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
-35526,98.00,37.00,40.00,93.00,30.00,11.00
-{"Temperature":93.00,"Humidity":30.00,"temperatureC":98.00,"SiTemp":40.00,"SiHum":37.00}
-Pushing data to the cloud
-Publishing data to Ubidots Cloud Packet 2
-{"Sensors_Status":18.00,"Msgs_to_cloud":1.00,"Msgs_to_card":17.00,"Reconnects":0.00,"cardFull":0.00}
-Pushing data to the cloud
-Publishing data to Ubidots Cloud
-From Debug to CSV Function
-Sensors , SD card  , DataTocloud , Reconnects
-18,18,1,0
-Sensors data collected
-Hello from Second task
-Sensors Read Done & No. of function loops = 
-19
-From Data to CSV Function
-Time ,DSTemp , SiTemp , SiHum , DHT Temp , DHT Humidity , Pressure
-37526,82.00,34.00,1.00,7.00,92.00,90.00
+62,62,3,0
+Sensors data collected & Msgs to SD card
