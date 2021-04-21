@@ -68,8 +68,61 @@ String delCredential(PageArgument&);
 #include "SD_MMC.h"
 
 
-//////////
-#define SENSOR 12 // Set the GPIO12 as SENSOR
+////////// Sensors Libraries 
+#include <DHT.h>
+#include "Configuration.h"    // this file is intended to switch differnt options for the software. Not well used at the moment.
+
+#include <Wire.h> // This library allows you to communicate with I2C devices.
+/////////////////////// Dallas Temperature Sensor  ////////
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+// GPIO where the DS18B20 is connected to
+const int oneWireBus = 22;     
+// Setup a oneWire instance to communicate with any OneWire devices
+OneWire oneWire(oneWireBus);
+// Pass our oneWire reference to Dallas Temperature sensor 
+DallasTemperature sensors(&oneWire);
+/////////////////////////// Si7021 Temperature sensor //////////
+#include "Si7021.h"
+
+Si7021 si7021;
+
+/////////////////////////MPU-6050 Accelermoeter and gyro ////
+const int MPU_ADDR = 0x68; // I2C address of the MPU-6050. If AD0 pin is set to HIGH, the I2C address will be 0x69.
+
+int16_t accelerometer_x, accelerometer_y, accelerometer_z; // variables for accelerometer raw data
+int16_t gyro_x, gyro_y, gyro_z; // variables for gyro raw data
+int16_t temperature; // variables for temperature data
+float sensor2;
+float sensor3;
+///////////////////////////////////////////////////////
+///////////////////////////// OLED Variables and iniializing //////////////////////////////
+#include "SSD1306.h" // alias for `#include "SSD1306Wire.h"`
+// Initialize the OLED display using Wire library for ESP-EVB SDA > 13 , SCL > 16
+
+SSD1306  display(0x3c, 13, 16);
+
+
+/////// DHT11 temp and humidity sensor setup ////////
+#define DHTTYPE DHT11   // DHT 22  (AM2302), AM2321
+uint8_t DHTPin = 19; // Set the GPIO19 as DHT11 sonic SENSOR
+
+// defining the pin of the DHT sensor and it's variables
+DHT dht(DHTPin, DHTTYPE);         
+/////// Ultrasonic Setup //////////////////
+const int trigPin = 2; // Set the GPIO2 as Ultra sonic SENSOR
+const int echoPin = 4;
+
+/*
+long duration;    // This are variables for the Ultrasonic readings
+int distance;
+float sensor1 ;     //
+*/
+
+
+
+//#define SENSOR 12 // Set the GPIO12 as SENSOR
 
 char mqttBroker[]  = "industrial.api.ubidots.com";
 char payload[300];
@@ -410,7 +463,228 @@ sprintf(payload, "%s", ""); // Cleans the payload
   //delay(1000);
 }
 
+void ReadAllSensors(){    // Read all the sensors 
+  mpu_read();     // calling the function of the MPU ( acceleromemeter ) 
+  DallasTemp();   // calling the function of the Dallas Temperature sensor
+  siTemp();     // calling the function of the Si7021 Temperature sensor
+  
+  //--------------Pressure Sensor------------------
+  int z;              // for next loop
+  int ADCreading;   // totals the ADC reading
+  pressureV = 0;     // start with zero
+  for (z=1; z<6; z++) {   // read pressure 5 times to get an average
 
+    if (isnan(analogRead(pressPin))) 
+    {
+      ADCreading = 0;    // if ADC always reads zero then pressureV will be 0
+    }
+    else  {
+      pressureV = pressureV + analogRead(pressPin);    // only do maths if pressure reading above 200 (guessed value)
+    }
+  }
+
+  pressureV = pressureV/5;     // find average
+
+  pressureV = pressureV - 320;
+  if (pressureV<= 0) {    // prevent readings less than zero
+    pressureV = 0;
+  }
+  pressureV = pressureV/331;  // convert to bar
+  
+
+  //------Gyroscope Sensor value--------
+  //float sensor1 = (3.3*analogRead(SENSOR0))/4096;
+  float sensor2 = gyro_x;  // defining the variable for gyroscope data in x-axis
+  float sensor3 = gyro_y;  // defining the variable for gyroscope data in y-axis
+  
+  //--------------DHT Sensor------------------
+  if (isnan(dht.readTemperature()) || isnan(dht.readHumidity())) 
+  {
+    Temperature = 0.0;
+    Humidity = 0.0;
+  }
+  else 
+  {
+  Temperature = dht.readTemperature(); // Gets the values of the temperature
+  Humidity = dht.readHumidity(); // Gets the values of the humidity  
+  }
+
+  int lowerBoundd = 0 ;
+  int upperBoundd = 100 ;
+
+  if (Temperature > lowerBoundd && Temperature < upperBoundd) {
+      Serial.print("DHT Temp are in range ");
+  }
+  else {
+      Temperature = 999.9;
+  }
+
+  if (Humidity > lowerBoundd && Humidity < upperBoundd) {
+      Serial.print("DHT Humidity are in range ");    
+  }
+  else {
+      Humidity = 999.9;
+  }
+  
+ //--------------Ultrasonic Sensor------------------
+   // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+   // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  distance= duration*0.034/2;       // Calculating the distance
+  sensor1 = distance;
+  msgs_sensors ++ ;
+         Serial.println("Sensors Read Done & No. of function loops = ");
+    Serial.println(msgs_sensors);
+}
+
+void mpu_read(){ // this is the main function for reading and calibrating the data of the Acceleromemter sensor
+  if (MPUSensor == true) {
+    Wire.beginTransmission(MPU_ADDR);
+    Wire.write(0x3B); // starting with register 0x3B (ACCEL_XOUT_H) [MPU-6000 and MPU-6050 Register Map and Descriptions Revision 4.2, p.40]
+    Wire.endTransmission(false); // the parameter indicates that the Arduino will send a restart. As a result, the connection is kept active.
+    Wire.requestFrom(MPU_ADDR, 7*2, true); // request a total of 7*2=14 registers
+    // "Wire.read()<<8 | Wire.read();" means two registers are read and stored in the same variable
+    accelerometer_x = Wire.read()<<8 | Wire.read(); // reading registers: 0x3B (ACCEL_XOUT_H) and 0x3C (ACCEL_XOUT_L)
+    accelerometer_y = Wire.read()<<8 | Wire.read(); // reading registers: 0x3D (ACCEL_YOUT_H) and 0x3E (ACCEL_YOUT_L)
+    accelerometer_z = Wire.read()<<8 | Wire.read(); // reading registers: 0x3F (ACCEL_ZOUT_H) and 0x40 (ACCEL_ZOUT_L)
+    temperature = Wire.read()<<8 | Wire.read(); // reading registers: 0x41 (TEMP_OUT_H) and 0x42 (TEMP_OUT_L)
+    gyro_x = Wire.read()<<8 | Wire.read(); // reading registers: 0x43 (GYRO_XOUT_H) and 0x44 (GYRO_XOUT_L)
+    gyro_y = Wire.read()<<8 | Wire.read(); // reading registers: 0x45 (GYRO_YOUT_H) and 0x46 (GYRO_YOUT_L)
+    gyro_z = Wire.read()<<8 | Wire.read(); // reading registers: 0x47 (GYRO_ZOUT_H) and 0x48 (GYRO_ZOUT_L)
+ }
+}
+
+void DallasTemp(){
+  if (DSTemp == true) {
+    int lowerBound = 0 ;
+    int upperBound = 100 ;
+    sensors.requestTemperatures(); 
+    temperatureC = sensors.getTempCByIndex(0);
+    temperatureF = sensors.getTempFByIndex(0);
+    if (temperatureC > lowerBound && temperatureC < upperBound) {
+      Serial.print("Probe Temp are in range ");    
+    }
+    else {
+      temperatureC = 999;
+    }
+  }
+}
+
+ void siTemp(){  /// For printing the sensor Si7021 data to serial
+  int lowerBound = 0 ;
+  int upperBound = 100 ;
+  SiHum = si7021.measureHumidity();
+  SiTemp = si7021.getTemperatureFromPreviousHumidityMeasurement();
+  if (SiTemp > lowerBound && SiTemp < upperBound) {
+    Serial.print("Si7021 Temp are in range ");
+      
+  }
+  else {
+    SiTemp = 999.9;
+  }
+  if (SiHum > lowerBound && SiHum < upperBound) {
+    Serial.print("Si7021 Humidity are in range ");  
+  }
+  else {
+    SiHum = 999.9;
+  } 
+}
+
+
+void   Display_Cloud_Sent(){
+  //REQUIRES WiFiSSID  RETURNS: Nothing
+
+  display.clear();                     // clear the display
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(0, 0, "Data Written");
+  display.drawString(30, 20, "   to Cloud ");
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 45, "Connected to ");
+  display.drawString(80, 45, "DBHome" );
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+//  display.drawString(60, 0, String(millis()));
+  display.display();      // write the buffer to the display
+}
+  
+void Dispay_Sensor_Values(){      // clear display and writes the sensor values
+  // REQUIRES SiTemp, SiHum, Temperature, Humidity, pressureV.  RETURNS: Nothing
+
+  display.clear();      // clear the display
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 0, "Int Air Temp: ");
+  display.drawString(100, 0, String(SiTemp) );
+  display.drawString(0, 10, "Int Air Hum: ");
+  display.drawString(100, 10, String(SiHum) );
+  display.drawString(0, 20, "Elec Temp: ");
+  display.drawString(100, 20, String(Temperature ));
+  display.drawString(0, 30, "Elec Hum: ");
+  display.drawString(100, 30, String(Humidity) );
+  display.drawString(0, 40, "Pressure");
+  display.drawString(100, 40, String(pressureV) );
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+  display.display(); 
+}
+
+void Dispay_Erros(){      // clear display and writes the sensor values
+  // REQUIRES Reconnects, Count_Samples.  RETURNS: Nothing
+
+  display.clear();      // clear the display
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(0, 0, "Operation Log");
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 20, "Reconnects: ");
+  display.drawString(100, 20, String(Reconnects) );
+  display.drawString(0, 30, "Sample Count: ");
+  display.drawString(100, 30, String(Count_Samples) );
+/*  display.drawString(0, 20, "Elec Temp: ");
+  display.drawString(100, 20, String(Temperature ));
+  display.drawString(0, 30, "Elec Hum: ");
+  display.drawString(100, 30, String(Humidity) );
+  display.drawString(0, 40, "Pressure");
+  display.drawString(100, 40, String(pressureV) );
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);*/
+  display.display(); 
+}
+
+
+
+
+void DisplaySensorsToSerial(){    // Display sensor values on serial port
+  Serial.print(temperatureC);
+  Serial.print("ºC . -- ");
+  Serial.print(temperatureF);
+  Serial.print("ºF . -- ");
+  Serial.print(pressureV);
+  Serial.println("bar. ");
+
+  Serial.print("aX = "); Serial.print(convert_int16_to_str(accelerometer_x));
+  Serial.print(" | aY = "); Serial.print(convert_int16_to_str(accelerometer_y));
+  Serial.print(" | aZ = "); Serial.print(convert_int16_to_str(accelerometer_z));
+  // the following equation was taken from the documentation [MPU-6000/MPU-6050 Register Map and Description, p.30]
+  Serial.print(" | tmp = "); Serial.print(temperature/340.00+36.53);      // accelerometer sensor
+  Serial.print(" | gX = "); Serial.print(convert_int16_to_str(gyro_x));
+  Serial.print(" | gY = "); Serial.print(convert_int16_to_str(gyro_y));
+  Serial.println(" | gZ = "); Serial.print(convert_int16_to_str(gyro_z));
+
+  Serial.print("Internal Hum: ");
+  Serial.print(SiHum);
+  Serial.print("% - Internal Temp: ");
+  Serial.print(SiTemp);
+  Serial.println("C");
+}
+
+/////////////////////////////////////////////////////////////////////////
+
+/*
 void ReadAllSensors(){    // Read all the sensors 
     float sensor2 = random(100);  // defining the variable for gyroscope data in x-axis
   float sensor3 = random(100);  // defining the variable for gyroscope data in y-axis
@@ -430,7 +704,7 @@ void ReadAllSensors(){    // Read all the sensors
        Serial.println("Sensors Read Done & No. of function loops = ");
     Serial.println(msgs_sensors);
 }
-
+*/
 void DataToCSV() {
   //dataStr[0] = 0; //clean out string
   Serial.println("From Data to CSV Function");
@@ -480,6 +754,29 @@ void Task2code( void * pvParameters ){
   while (true){
     Serial.println("Hello from Second task");
       ReadAllSensors();
+    delay(200);
+    DataToCSV();
+     delay(200);
+       DisplaySensorsToSerial();   // Display sensor values
+  Dispay_Sensor_Values();     // clear display and writes the sensor values. REQUIRES SiTemp, SiHum, Temperature, Humidity, pressureV.  RETURNS: Nothing
+  delay(1500);                // wait for display
+  Dispay_Erros();             // clear display and writes the sensor values. REQUIRES Reconnects, Count_Samples  RETURNS: Nothing
+  delay(1500);                // wait for display
+    Display_Cloud_Sent();     // REQUIRES WiFiSSID  RETURNS: Nothing  
+ delay(200);
+    DebugToCSV();
+  Serial.println("Sensors data collected");
+  
+    //delay(1000);  // task repeat every number of milliseconds
+
+  }
+}
+
+/*
+void Task2code( void * pvParameters ){
+  while (true){
+    Serial.println("Hello from Second task");
+      ReadAllSensors();
     delay(500);
     DataToCSV();
      delay(500);
@@ -490,7 +787,7 @@ void Task2code( void * pvParameters ){
 
   }
 }
-
+*/
 /////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
@@ -530,6 +827,61 @@ void setup() {
         writeFile(SD_MMC, "/debugs.csv", statusStr);
 
        //////////////////
+
+       
+  // initializing the I/O
+  pinMode(trigPin, OUTPUT);       // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT);        // Sets the echoPin as an Input
+  pinMode(pressPin, INPUT);
+  pinMode(DHTPin, INPUT);         // defining the DHT temperature sensor as input
+  pinMode (ledPin, OUTPUT);       // setup Led pin as a digital output pin
+
+  /////////////////    DHT11 temp and humidity initilisation  ////////////////////////////////////// 
+  dht.begin();  //Starting DHTT
+  //////////////////    DS18B20 temp probe initialisation  //////////////////////////////////////
+  sensors.begin(); // initializing the DS18B20  sensor
+
+  //////////////////    Temp Humidity Si7021 sensor Initilisation  ////////////////////////
+  uint64_t serialNumber = 0ULL;
+  
+  si7021.begin();
+  serialNumber = si7021.getSerialNumber();
+
+  //arduino lib doesn't natively support printing 64bit numbers on the serial port
+  //so it's done in 2 times
+  Serial.print("Si7021 serial number: ");
+  Serial.print((uint32_t)(serialNumber >> 32), HEX);
+  Serial.println((uint32_t)(serialNumber), HEX);
+
+  //Firware version
+  Serial.print("Si7021 firmware version: ");
+  Serial.println(si7021.getFirmwareVersion(), HEX);
+
+  //////////////////    Accelermoter Initilisation  //////////////////////////////////////
+  Wire.begin(); // MPU to begin ( Acceleromemter ) 
+  Wire.beginTransmission(MPU_ADDR); // Begins a transmission to the I2C slave (GY-521 board)
+  Wire.write(0x6B);                 // PWR_MGMT_1 register
+  Wire.write(0);                    // set to zero (wakes up the MPU-6050)
+  Wire.endTransmission(true);
+
+       ///////////////////////////////////OLED_Starting ///////////////////////
+  // Write Splash Screen
+  display.init();
+  display.flipScreenVertically();
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(0, 0, "GWS Monitoring");
+  display.setTextAlignment(TEXT_ALIGN_LEFT); 
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 20, "V2.0 ");
+  display.setTextAlignment(TEXT_ALIGN_LEFT); 
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 30, "Connecting to wifi ");
+  display.drawString(0, 40,String(WiFi.status()));
+  display.display();
+  delay(1000);
+
+/////////////////////////////////////////////////Threads initializing
   
 // create the thread of task os getting sensor data 
   //create a task that will be executed in the Task2code() function, with priority 1 and executed on core 0
@@ -541,6 +893,9 @@ void setup() {
      1, //priority of the task
      &SensorsDataTask, //Task handle to keep track of created task
      0); //pin task to core 0
+
+
+  ////////////////////  Initialise WiFi////////////////////////////////////////////
 
   rootPage.insert(Server);    // Instead of Server.on("/", ...);
   //delPage.insert(Server);     // Instead of Server.on("/del", ...); ( have deleted this ) 

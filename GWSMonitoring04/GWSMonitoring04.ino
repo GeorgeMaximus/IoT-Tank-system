@@ -25,100 +25,6 @@
  * Multitasking
  */
 
-/////////////////////// Mr. Duncacn Device Libraries /////////////////////////////////////////
-///////////////////////////////
-// Connecting to Ethernet 
-#define ETH_CLK_MODE ETH_CLOCK_GPIO17_OUT
-#define ETH_PHY_POWER 12
-
-#include <ETH.h>
-
-// SD Card libraries
-#include "FS.h"
-#include "SD_MMC.h"
-byte i;   // counter used in file reading
-byte x;   // counter used in file reading
-byte z;   // counter used in file reading
-
-#include <DHT.h>
-#include "Configuration.h"    // this file is intended to switch differnt options for the software. Not well used at the moment.
-
-#include <Wire.h> // This library allows you to communicate with I2C devices.
-/////////////////////// Dallas Temperature Sensor  ////////
-#include <OneWire.h>
-#include <DallasTemperature.h>
-
-// GPIO where the DS18B20 is connected to
-const int oneWireBus = 22;     
-// Setup a oneWire instance to communicate with any OneWire devices
-OneWire oneWire(oneWireBus);
-// Pass our oneWire reference to Dallas Temperature sensor 
-DallasTemperature sensors(&oneWire);
-
-// Dallas temperature variables 
-float temperatureC =0.0 ;
-float temperatureF = 0.0 ;
-
-
-/////////////////////////// Si7021 Temperature sensor //////////
-#include "Si7021.h"
-
-Si7021 si7021;
-
-// Si7021 temperature variables 
-float SiTemp =0.0 ;
-float SiHum = 0.0 ;
-
-
-/////////////////////////MPU-6050 Accelermoeter and gyro ////
-const int MPU_ADDR = 0x68; // I2C address of the MPU-6050. If AD0 pin is set to HIGH, the I2C address will be 0x69.
-
-int16_t accelerometer_x, accelerometer_y, accelerometer_z; // variables for accelerometer raw data
-int16_t gyro_x, gyro_y, gyro_z; // variables for gyro raw data
-int16_t temperature; // variables for temperature data
-float sensor2;
-float sensor3;
-///////////////////////////////////////////////////////
-///////////////////////////// OLED Variables and iniializing //////////////////////////////
-#include "SSD1306.h" // alias for `#include "SSD1306Wire.h"`
-// Initialize the OLED display using Wire library for ESP-EVB SDA > 13 , SCL > 16
-
-SSD1306  display(0x3c, 13, 16);
-
-
-/////// DHT11 temp and humidity sensor setup ////////
-#define DHTTYPE DHT11   // DHT 22  (AM2302), AM2321
-uint8_t DHTPin = 19; // Set the GPIO19 as DHT11 sonic SENSOR
-
-// defining the pin of the DHT sensor and it's variables
-DHT dht(DHTPin, DHTTYPE);                
-float Temperature;
-float Humidity;
-
-
-/////// Ultrasonic Setup //////////////////
-const int trigPin = 2; // Set the GPIO2 as Ultra sonic SENSOR
-const int echoPin = 4;
-
-long duration;    // This are variables for the Ultrasonic readings
-int distance;
-float sensor1 ;     //
-
-
-/////// Pressure Sensor value
-float pressureV;    // value from ADC
-
-
-/////// LED Setup //////////////////
-const int ledPin = 32; // Set the GPIO 32 as Led 
-
-
-/////// ADC for presssure sensor Setup //////////////////
-const int pressPin = 34; // pressure sensor pin GPIO 34 >> adc0
-
-
-////////////////////////////////////////////////////////////////////////
-
 // Access Point SSID = espAp
 // Access point Pass = 12345678
 
@@ -144,31 +50,96 @@ AutoConnect      Portal(Server);
 String viewCredential(PageArgument&);
 String delCredential(PageArgument&);
 
-/////////////////////////////////////////////////////
-
-// Specified the offset if the user data exists.
-// The following two lines define the boundalyOffset value to be supplied to
-// AutoConnectConfig respectively. It may be necessary to adjust the value
-// accordingly to the actual situation.
-
-#define CREDENTIAL_OFFSET 0
-//#define CREDENTIAL_OFFSET 64
-
-
 /////////////////////////////////////////////// MQTT Variable for Ubidots 
 //#define WIFISSID "GeorgeMaximus" // Put your WifiSSID here
 //#define PASSWORD "maxi1234" // Put your wifi password here
 #define TOKEN "BBFF-l8gRwzQpEikMaXp3uAahxYodCzOX45" // Put your Ubidots' TOKEN
-#define MQTT_CLIENT_NAME "GRDuncanIoT32Maxi66" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string; 
+#define MQTT_CLIENT_NAME "GRDuncanIoT32Maxi55" // MQTT client Name, please enter your own 8-12 alphanumeric character ASCII string; 
                                            //it should be a random and unique ascii string and different from all other devices
 
 /****************************************
  * Define Constants
  ****************************************/
 #define VARIABLE_LABEL "sensor2" // Assing the variable label
-#define DEVICE_LABEL "esp64" // Assig the device label
+#define DEVICE_LABEL "esp55" // Assig the device label
 
-#define SENSOR 12 // Set the GPIO12 as SENSOR
+////////////   SD CARD
+#include "FS.h"
+#include "SD_MMC.h"
+
+
+////////// Sensors Libraries 
+#include <DHT.h>
+#include "Configuration.h"    // this file is intended to switch differnt options for the software. Not well used at the moment.
+
+#include <Wire.h> // This library allows you to communicate with I2C devices.
+/////////////////////// Dallas Temperature Sensor  ////////
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+// GPIO where the DS18B20 is connected to
+const int oneWireBus = 22;     
+// Setup a oneWire instance to communicate with any OneWire devices
+OneWire oneWire(oneWireBus);
+// Pass our oneWire reference to Dallas Temperature sensor 
+DallasTemperature sensors(&oneWire);
+/////////////////////////// Si7021 Temperature sensor //////////
+#include "Si7021.h"
+
+Si7021 si7021;
+
+/////////////////////////MPU-6050 Accelermoeter and gyro ////
+const int MPU_ADDR = 0x68; // I2C address of the MPU-6050. If AD0 pin is set to HIGH, the I2C address will be 0x69.
+
+/*int16_t accelerometer_x, accelerometer_y, accelerometer_z; // variables for accelerometer raw data
+int16_t gyro_x, gyro_y, gyro_z; // variables for gyro raw data
+int16_t temperature; // variables for temperature data
+float sensor2;
+float sensor3;
+*/
+
+int16_t accelerometer_x, accelerometer_y, accelerometer_z; // variables for accelerometer raw data
+int16_t gyro_x, gyro_y, gyro_z; // variables for gyro raw data
+int16_t temperature; // variables for temperature data
+float sensor2;
+float sensor3;
+float Temperature;
+float Humidity;
+//long duration;    // This are variables for the Ultrasonic readings
+int distance;
+float sensor1 ;     //
+float temperatureC;
+float SiTemp;
+float SiHum;
+/////// Pressure Sensor value
+float pressureV;    // value from ADC
+///////////////////////////////////////////////////////
+///////////////////////////// OLED Variables and iniializing //////////////////////////////
+#include "SSD1306.h" // alias for `#include "SSD1306Wire.h"`
+// Initialize the OLED display using Wire library for ESP-EVB SDA > 13 , SCL > 16
+
+SSD1306  display(0x3c, 13, 16);
+
+
+/////// DHT11 temp and humidity sensor setup ////////
+#define DHTTYPE DHT11   // DHT 22  (AM2302), AM2321
+uint8_t DHTPin = 19; // Set the GPIO19 as DHT11 sonic SENSOR
+
+// defining the pin of the DHT sensor and it's variables
+DHT dht(DHTPin, DHTTYPE);         
+/////// Ultrasonic Setup //////////////////
+const int trigPin = 2; // Set the GPIO2 as Ultra sonic SENSOR
+const int echoPin = 4;
+
+/*
+long duration;    // This are variables for the Ultrasonic readings
+int distance;
+float sensor1 ;     //
+*/
+
+
+
+//#define SENSOR 12 // Set the GPIO12 as SENSOR
 
 char mqttBroker[]  = "industrial.api.ubidots.com";
 char payload[300];
@@ -216,24 +187,10 @@ char statusStr[100] = "Sensors , SD card  , DataTocloud , Reconnects";   // for 
 
 
 ////////////////////////////////////////////////////////////////////////
-/*
 
-int16_t accelerometer_x, accelerometer_y, accelerometer_z; // variables for accelerometer raw data
-int16_t gyro_x, gyro_y, gyro_z; // variables for gyro raw data
-int16_t temperature; // variables for temperature data
-float sensor2;
-float sensor3;
-float Temperature;
-float Humidity;
-//long duration;    // This are variables for the Ultrasonic readings
-int distance;
-float sensor1 ;     //
-float temperatureC;
-float SiTemp;
-float SiHum;
-/////// Pressure Sensor value
-float pressureV;    // value from ADC
-*/
+
+
+
 /////////////////////////////////////////////////////////
 /****************************************
  * Auxiliar Functions
@@ -275,150 +232,125 @@ void reconnect() {
   }
 }
 
+/////////////////////////////////////////////////////
+
+// Specified the offset if the user data exists.
+// The following two lines define the boundalyOffset value to be supplied to
+// AutoConnectConfig respectively. It may be necessary to adjust the value
+// accordingly to the actual situation.
+
+#define CREDENTIAL_OFFSET 0
+//#define CREDENTIAL_OFFSET 64
+
+/**
+ *  An HTML for the operation page.
+ *  In PageBuilder, the token {{SSID}} contained in an HTML template below is
+ *  replaced by the actual SSID due to the action of the token handler's
+ * 'viewCredential' function.
+ *  The number of the entry to be deleted is passed to the function in the
+ *  POST method.
+ */
+static const char PROGMEM html[] = R"*lit(
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  html {
+  font-family:Helvetica,Arial,sans-serif;
+  -ms-text-size-adjust:100%;
+  -webkit-text-size-adjust:100%;
+  }
+  .menu > a:link {
+    position: absolute;
+    display: inline-block;
+    right: 12px;
+    padding: 0 6px;
+    text-decoration: none;
+  }
+  </style>
+</head>
+<body>
+<div class="menu">{{AUTOCONNECT_MENU}}</div>
+<form action="/del" method="POST">
+  <ol>
+  {{SSID}}
+  </ol>
+  <p>Enter deleting entry:</p>
+  <input type="number" min="1" name="num">
+  <input type="submit">
+</form>
+</body>
+</html>
+)*lit";
+
+static const char PROGMEM autoconnectMenu[] = { AUTOCONNECT_LINK(BAR_24) };
+
+// URL path as '/'
+PageElement elmList(html,
+  {{ "SSID", viewCredential },
+   { "AUTOCONNECT_MENU", [](PageArgument& args) {
+                            return String(FPSTR(autoconnectMenu));} }
+  });
+PageBuilder rootPage("/", { elmList });
+
+// URL path as '/del'
+PageElement elmDel("{{DEL}}", {{ "DEL", delCredential }});
+PageBuilder delPage("/del", { elmDel });
+
+// Retrieve the credential entries from EEPROM, Build the SSID line
+// with the <li> tag.
+String viewCredential(PageArgument& args) {
+  AutoConnectCredential  ac(CREDENTIAL_OFFSET);
+  station_config_t  entry;
+  String content = "";
+  uint8_t  count = ac.entries();          // Get number of entries.
+
+  for (int8_t i = 0; i < count; i++) {    // Loads all entries.
+    ac.load(i, &entry);
+    // Build a SSID line of an HTML.
+    content += String("<li>") + String((char *)entry.ssid) + String("</li>");
+  }
+
+  // Returns the '<li>SSID</li>' container.
+  return content;
+}
+
+// Delete a credential entry, the entry to be deleted is passed in the
+// request parameter 'num'.
+String delCredential(PageArgument& args) {
+  AutoConnectCredential  ac(CREDENTIAL_OFFSET);
+  if (args.hasArg("num")) {
+    int8_t  e = args.arg("num").toInt();
+    Serial.printf("Request deletion #%d\n", e);
+    if (e > 0) {
+      station_config_t  entry;
+
+      // If the input number is valid, delete that entry.
+      int8_t  de = ac.load(e - 1, &entry);  // A base of entry num is 0.
+      if (de > 0) {
+        Serial.printf("Delete for %s ", (char *)entry.ssid);
+        Serial.printf("%s\n", ac.del((char *)entry.ssid) ? "completed" : "failed");
+
+        // Returns the redirect response. The page is reloaded and its contents
+        // are updated to the state after deletion. It returns 302 response
+        // from inside this token handler.
+        Server.sendHeader("Location", String("http://") + Server.client().localIP().toString() + String("/"));
+        Server.send(302, "text/plain", "");
+        Server.client().flush();
+        Server.client().stop();
+
+        // Cancel automatic submission by PageBuilder.
+        delPage.cancel();
+      }
+    }
+  }
+  return "";
+}
 
 ////////////////////////////// Functions //////////////////////
 
-// Ethernet and WIFI Integration functions :
-void WiFiEvent(WiFiEvent_t event)
-{
-    Serial.printf("[WiFi-event] event: %d\n", event);
-
-    switch (event) {
-        case SYSTEM_EVENT_WIFI_READY: 
-            Serial.println("WiFi interface ready");
-            break;
-        case SYSTEM_EVENT_SCAN_DONE:
-            Serial.println("Completed scan for access points");
-            break;
-        case SYSTEM_EVENT_STA_START:
-            Serial.println("WiFi client started");
-            break;
-        case SYSTEM_EVENT_STA_STOP:
-            Serial.println("WiFi clients stopped");
-            break;
-        case SYSTEM_EVENT_STA_CONNECTED:
-            Serial.println("Connected to access point");
-            break;
-        case SYSTEM_EVENT_STA_DISCONNECTED:
-            Serial.println("Disconnected from WiFi access point");
-            break;
-        case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
-            Serial.println("Authentication mode of access point has changed");
-            break;
-        case SYSTEM_EVENT_STA_GOT_IP:
-            Serial.print("Obtained IP address: ");
-            Serial.println(WiFi.localIP());
-            break;
-        case SYSTEM_EVENT_STA_LOST_IP:
-            Serial.println("Lost IP address and IP address is reset to 0");
-            break;
-        case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-            Serial.println("WiFi Protected Setup (WPS): succeeded in enrollee mode");
-            break;
-        case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-            Serial.println("WiFi Protected Setup (WPS): failed in enrollee mode");
-            break;
-        case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-            Serial.println("WiFi Protected Setup (WPS): timeout in enrollee mode");
-            break;
-        case SYSTEM_EVENT_STA_WPS_ER_PIN:
-            Serial.println("WiFi Protected Setup (WPS): pin code in enrollee mode");
-            break;
-        case SYSTEM_EVENT_AP_START:
-            Serial.println("WiFi access point started");
-            break;
-        case SYSTEM_EVENT_AP_STOP:
-            Serial.println("WiFi access point  stopped");
-            break;
-        case SYSTEM_EVENT_AP_STACONNECTED:
-            Serial.println("Client connected");
-            break;
-        case SYSTEM_EVENT_AP_STADISCONNECTED:
-            Serial.println("Client disconnected");
-            break;
-        case SYSTEM_EVENT_AP_STAIPASSIGNED:
-            Serial.println("Assigned IP address to client");
-            break;
-        case SYSTEM_EVENT_AP_PROBEREQRECVED:
-            Serial.println("Received probe request");
-            break;
-        case SYSTEM_EVENT_GOT_IP6:
-            Serial.println("IPv6 is preferred");
-            break;
-        case SYSTEM_EVENT_ETH_START:
-            Serial.println("Ethernet started");
-            break;
-        case SYSTEM_EVENT_ETH_STOP:
-            Serial.println("Ethernet stopped");
-            break;
-        case SYSTEM_EVENT_ETH_CONNECTED:
-            Serial.println("Ethernet connected");
-            break;
-        case SYSTEM_EVENT_ETH_DISCONNECTED:
-            Serial.println("Ethernet disconnected");
-            break;
-        case SYSTEM_EVENT_ETH_GOT_IP:
-            Serial.println("Obtained IP address");
-            break;
-        default: break;
-    }}
-
-void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
-{
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(IPAddress(info.got_ip.ip_info.ip.addr));
-}
-/////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////// SD Card Functions ////////////////////
-
-/*
-void readFile(fs::FS &fs, const char * path){
-    Serial.printf("Reading file: %s\n", path);
-
-    File file = fs.open(path);
-    if(!file){
-        Serial.println("Failed to open file for reading");
-        return;
-    }
-    Serial.print("Read from file: ");
-    while(file.available()) WiFiSSID[i++] = file.read();
-    WiFiSSID[i]= '\0';
-}
-
-void readFil(fs::FS &fs, const char * path){
-    Serial.printf("Reading file: %s\n", path);
-
-    File fil = fs.open(path);
-    if(!fil){
-        Serial.println("Failed to open file for reading");
-        return;
-    }
-
-    Serial.print("Read from file: ");
-    while(fil.available()) WiFiPASSWORD[x++] = fil.read();
-    WiFiPASSWORD[x]= '\0';
-    
-     //   Serial.write(file.read());
-      //  pass =String( Serial.write(file.read()));
-    //}
-}
-
-void readID(fs::FS &fs, const char * path){
-    Serial.printf("Reading file: %s\n", path);
-
-    File ID = fs.open(path);
-    if(!ID){
-        Serial.println("Failed to open file for reading");
-        return;
-    }
-
-    Serial.print("Read from file: ");
-    while(ID.available()) DEVICE_LABEL[z++] = ID.read();
-    DEVICE_LABEL[z]= '\0';
-}
-
-*/
+// SD card Functions 
 void writeFile(fs::FS &fs, const char * path, const char * message){
     Serial.printf("Writing file: %s\n", path);
 
@@ -434,7 +366,6 @@ void writeFile(fs::FS &fs, const char * path, const char * message){
     }
 }
 
-
 void appendFile(fs::FS &fs, const char * path, const char * message){
     Serial.printf("Appending to file: %s\n", path);
 
@@ -445,18 +376,96 @@ void appendFile(fs::FS &fs, const char * path, const char * message){
     }
     if(file.print(message)){
         Serial.println("Message appended");
-        msgs_card ++ ;
-        Serial.println("total Messages appended");
-        Serial.println(msgs_card);
     } else {
         Serial.println("Append failed");
     }
 }
-/////////////////////////////////////////////////////////////////////////////////
 
-/****************************************
- * Older Functions that have been working well.
- ****************************************/
+void DataToCloud() {
+  if (!client.connected()) {
+    reconnect();
+  }
+
+ sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);  // we changed this line with the device ID 
+  sprintf(payload, "%s", ""); // Cleans the payload
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
+  dtostrf(sensor1, 4, 2, str_sensor1);
+  dtostrf(sensor2, 4, 2, str_sensor2);
+  dtostrf(sensor3, 4, 2, str_sensor3);
+  dtostrf(pressureV, 4, 2, str_sensor4);
+  dtostrf(accelerometer_x, 4, 2, str_accx);
+  dtostrf(accelerometer_y, 4, 2, str_accy);
+  dtostrf(accelerometer_z, 4, 2, str_accz);
+  dtostrf(Temperature, 4, 2, str_temp);
+  dtostrf(Humidity, 4, 2, str_humid);
+  dtostrf(temperatureC, 4, 2, str_tempC);
+  dtostrf(SiHum, 4, 2, str_humidSi);
+  dtostrf(SiTemp, 4, 2, str_tempSi);
+// debug variables to be assigned
+   dtostrf(msgs_sensors, 4, 2, str_sensors);
+ dtostrf(msgs_cloud, 4, 2, str_dtc);
+  dtostrf(msgs_card, 4, 2, str_card);
+  dtostrf(Reconnects, 4, 2, str_connects);
+  dtostrf(cardFull, 4, 2, str_full);
+  
+  // This section is to send the data measured from the esp32 to the ubidots
+  sprintf(payload, "{");
+  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor1);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Pressure", str_sensor4);
+    sprintf(payload, "%s}", payload);
+  Serial.println(payload);
+  Serial.println("Pushing data to the cloud");
+
+  Serial.println("Publishing data to Ubidots Cloud Packet 1");
+  client.publish(topic, payload);
+  delay(200);
+
+
+sprintf(payload, "%s", ""); // Cleans the payload
+    sprintf(payload, "{\"");
+  
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_X", str_accx);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Y", str_accy);
+  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Z", str_accz);
+  
+  sprintf(payload, "%s%s\":%s", payload, "Temperature", str_temp);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Humidity", str_humid);
+  sprintf(payload, "%s,\"%s\":%s", payload, "temperatureC", str_tempC);
+  sprintf(payload, "%s,\"%s\":%s", payload, "SiTemp", str_humidSi);
+  sprintf(payload, "%s,\"%s\":%s", payload, "SiHum", str_tempSi);
+      sprintf(payload, "%s}", payload);
+  Serial.println(payload);
+  Serial.println("Pushing data to the cloud");
+
+  Serial.println("Publishing data to Ubidots Cloud Packet 2");
+  client.publish(topic, payload);
+  delay(200);
+
+
+sprintf(payload, "%s", ""); // Cleans the payload
+    sprintf(payload, "{\"");
+
+  
+// debug variables to be assigned
+
+  sprintf(payload, "%s%s\":%s", payload, "Sensors_Status", str_sensors);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_cloud", str_dtc);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_card", str_card);
+  sprintf(payload, "%s,\"%s\":%s", payload, "Reconnects", str_connects);
+  sprintf(payload, "%s,\"%s\":%s", payload, "cardFull", str_full);
+  sprintf(payload, "%s}", payload);
+  Serial.println(payload);
+  Serial.println("Pushing data to the cloud");
+
+  Serial.println("Publishing data to Ubidots Cloud");
+  client.publish(topic, payload);
+  client.loop();
+  msgs_cloud ++;
+  //delay(1000);
+}
+
 void ReadAllSensors(){    // Read all the sensors 
   mpu_read();     // calling the function of the MPU ( acceleromemeter ) 
   DallasTemp();   // calling the function of the Dallas Temperature sensor
@@ -533,17 +542,10 @@ void ReadAllSensors(){    // Read all the sensors
   distance= duration*0.034/2;       // Calculating the distance
   sensor1 = distance;
   msgs_sensors ++ ;
+         Serial.println("Sensors Read Done & No. of function loops = ");
+    Serial.println(msgs_sensors);
 }
 
-
-char tmp_str[7]; // temporary variable used in convert function
-
-char* convert_int16_to_str(int16_t i) { // converts int16 to string. Moreover, resulting strings will have the same length in the debug monitor.
-  sprintf(tmp_str, "%6d", i);
-  return tmp_str;
-}
-
- 
 void mpu_read(){ // this is the main function for reading and calibrating the data of the Acceleromemter sensor
   if (MPUSensor == true) {
     Wire.beginTransmission(MPU_ADDR);
@@ -685,90 +687,6 @@ void DisplaySensorsToSerial(){    // Display sensor values on serial port
 
 /////////////////////////////////////////////////////////////////////////
 
-void DataToCloud() {
-  if (!client.connected()) {
-    reconnect();
-  }
-
- sprintf(topic, "%s%s", "/v1.6/devices/", DEVICE_LABEL);  // we changed this line with the device ID 
-  sprintf(payload, "%s", ""); // Cleans the payload
-  /* 4 is mininum width, 2 is precision; float value is copied onto str_sensor*/
-  dtostrf(sensor1, 4, 2, str_sensor1);
-  dtostrf(sensor2, 4, 2, str_sensor2);
-  dtostrf(sensor3, 4, 2, str_sensor3);
-  dtostrf(pressureV, 4, 2, str_sensor4);
-  dtostrf(accelerometer_x, 4, 2, str_accx);
-  dtostrf(accelerometer_y, 4, 2, str_accy);
-  dtostrf(accelerometer_z, 4, 2, str_accz);
-  dtostrf(Temperature, 4, 2, str_temp);
-  dtostrf(Humidity, 4, 2, str_humid);
-  dtostrf(temperatureC, 4, 2, str_tempC);
-  dtostrf(SiHum, 4, 2, str_humidSi);
-  dtostrf(SiTemp, 4, 2, str_tempSi);
-// debug variables to be assigned
-   dtostrf(msgs_sensors, 4, 2, str_sensors);
- dtostrf(msgs_cloud, 4, 2, str_dtc);
-  dtostrf(msgs_card, 4, 2, str_card);
-  dtostrf(Reconnects, 4, 2, str_connects);
-  dtostrf(cardFull, 4, 2, str_full);
-  
-  // This section is to send the data measured from the esp32 to the ubidots
-  sprintf(payload, "{");
-  sprintf(payload, "%s%s\":%s", payload, "Ultrasonic", str_sensor1);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_Y", str_sensor2);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Gyro_X", str_sensor3);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Pressure", str_sensor4);
-    sprintf(payload, "%s}", payload);
-  Serial.println(payload);
-  Serial.println("Pushing data to the cloud");
-
-  Serial.println("Publishing data to Ubidots Cloud Packet 1");
-  client.publish(topic, payload);
-  delay(200);
-
-
-sprintf(payload, "%s", ""); // Cleans the payload
-    sprintf(payload, "{\"");
-  
-  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_X", str_accx);
-  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Y", str_accy);
-  //sprintf(payload, "%s,\"%s\":%s", payload, "acc_Z", str_accz);
-  
-  sprintf(payload, "%s%s\":%s", payload, "Temperature", str_temp);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Humidity", str_humid);
-  sprintf(payload, "%s,\"%s\":%s", payload, "temperatureC", str_tempC);
-  sprintf(payload, "%s,\"%s\":%s", payload, "SiTemp", str_humidSi);
-  sprintf(payload, "%s,\"%s\":%s", payload, "SiHum", str_tempSi);
-      sprintf(payload, "%s}", payload);
-  Serial.println(payload);
-  Serial.println("Pushing data to the cloud");
-
-  Serial.println("Publishing data to Ubidots Cloud Packet 2");
-  client.publish(topic, payload);
-  delay(200);
-
-
-sprintf(payload, "%s", ""); // Cleans the payload
-    sprintf(payload, "{\"");
-
-  
-// debug variables to be assigned
-
-  sprintf(payload, "%s%s\":%s", payload, "Sensors_Status", str_sensors);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_cloud", str_dtc);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Msgs_to_card", str_card);
-  sprintf(payload, "%s,\"%s\":%s", payload, "Reconnects", str_connects);
-  sprintf(payload, "%s,\"%s\":%s", payload, "cardFull", str_full);
-  sprintf(payload, "%s}", payload);
-  Serial.println(payload);
-  Serial.println("Pushing data to the cloud");
-
-  Serial.println("Publishing data to Ubidots Cloud");
-  client.publish(topic, payload);
-  client.loop();
-  //delay(1000);
-}
-
 /*
 void ReadAllSensors(){    // Read all the sensors 
     float sensor2 = random(100);  // defining the variable for gyroscope data in x-axis
@@ -784,7 +702,7 @@ void ReadAllSensors(){    // Read all the sensors
   accelerometer_z = random(100);
   accelerometer_x= random(100);
   
-  cardFull = 0;
+  //cardFull = 0;
    msgs_sensors ++ ;
        Serial.println("Sensors Read Done & No. of function loops = ");
     Serial.println(msgs_sensors);
@@ -793,12 +711,16 @@ void ReadAllSensors(){    // Read all the sensors
 void DataToCSV() {
   //dataStr[0] = 0; //clean out string
   Serial.println("From Data to CSV Function");
+
    String SSupd = String(millis()) + "," + String(temperatureC) + ","+ String(SiTemp) + ","+ String(SiHum);
    String SSupb = String(Temperature) + "," + String(Humidity) + ","+ String(pressureV);
    
  dataStr = SSupd + "," + SSupb ;
+ const char* dataChar = dataStr.c_str();
+  Serial.println("Sensors data to be sent to CSV");
   Serial.println(HeadStr);
   Serial.println(dataStr);
+   appendFile(SD_MMC, "/data.csv", dataChar);
   msgs_card ++ ;
   
 }
@@ -809,8 +731,11 @@ void DebugToCSV() {
    String SSup = String(msgs_sensors) + "," + String(msgs_card) + ","+ String(msgs_cloud) + ","+ String(Reconnects);
 
   statusRec = SSup;
+  const char* statusChar = statusRec.c_str();  // convert string to const char
+  Serial.println("Sensors data to be sent to CSV");
   Serial.println(statusStr);
   Serial.println(statusRec);
+  appendFile(SD_MMC, "/debugs.csv", statusChar);
 }
 
 //////////////////////////////// Multi Tasking /////////////////////
@@ -850,6 +775,22 @@ void Task2code( void * pvParameters ){
   }
 }
 
+/*
+void Task2code( void * pvParameters ){
+  while (true){
+    Serial.println("Hello from Second task");
+      ReadAllSensors();
+    delay(500);
+    DataToCSV();
+     delay(500);
+    DebugToCSV();
+  Serial.println("Sensors data collected & Msgs to SD card ready");
+  
+    delay(1000);  // task repeat every number of milliseconds
+
+  }
+}
+*/
 /////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
@@ -858,58 +799,39 @@ void setup() {
   Serial.println();
   Serial.println("Serial is started " );
 
+  // SD card Initialization
+      Serial.begin(115200);
+    if(!SD_MMC.begin()){
+        Serial.println("Card Mount Failed");
+        return;
+    }
+    uint8_t cardType = SD_MMC.cardType();
 
-  /////////////////////////////////////// SD card ////////////////
-  if(!SD_MMC.begin()){
-      Serial.println("Card Mount Failed");
-//      return;
-  }
-  uint8_t cardType = SD_MMC.cardType();
+    if(cardType == CARD_NONE){
+        Serial.println("No SD_MMC card attached");
+        return;
+    }
 
-  if(cardType == CARD_NONE){
-      Serial.println("No SD_MMC card attached");
-      return;
-  }
+    Serial.print("SD_MMC Card Type: ");
+    if(cardType == CARD_MMC){
+        Serial.println("MMC");
+    } else if(cardType == CARD_SD){
+        Serial.println("SDSC");
+    } else if(cardType == CARD_SDHC){
+        Serial.println("SDHC");
+    } else {
+        Serial.println("UNKNOWN");
+    }
 
-  Serial.print("SD_MMC Card Type: ");
-  if(cardType == CARD_MMC){
-      Serial.println("MMC");
-  } else if(cardType == CARD_SD){
-      Serial.println("SDSC");
-  } else if(cardType == CARD_SDHC){
-      Serial.println("SDHC");
-  } else {
-      Serial.println("UNKNOWN");
-  }
+    uint64_t cardSize = SD_MMC.cardSize() / (1024 * 1024);
+    Serial.printf("SD_MMC Card Size: %lluMB\n", cardSize);
 
-  uint64_t cardSize = SD_MMC.cardSize() / (1024 * 1024);
-  Serial.printf("SD_MMC Card Size: %lluMB\n", cardSize);
+       writeFile(SD_MMC, "/data.csv", HeadStr);
+        writeFile(SD_MMC, "/debugs.csv", statusStr);
 
-    // Check the capacity of the Card and if there is space we can write to it
-      Serial.printf("Total space: %lluMB\n", SD_MMC.totalBytes() / (1024 * 1024));
-    Serial.printf("Used space: %lluMB\n", SD_MMC.usedBytes() / (1024 * 1024));
-    float totalStorage = SD_MMC.totalBytes() / (1024 * 1024) ;
-    float usedStorage = SD_MMC.usedBytes() / (1024 * 1024) ;
+       //////////////////
 
-  if (totalStorage > 1.1*usedStorage) {
-     writeFile(SD_MMC, "/datalogger.csv", HeadStr);
-  Serial.print("SD_MMC Card DataLogger.csv : ");
-  Serial.print(HeadStr);
-  Serial.print("  Done  ");
-
-  writeFile(SD_MMC, "/debuglogger.csv", statusStr);
-  Serial.print("SD_MMC Card debugLogger.csv : ");
-  Serial.print(statusStr);
-  Serial.print("  Done  ");
-
-  }
-  else {
-    Serial.print("Warning :You should Change the SD Card as it is FULL ");
-    cardFull = 1 ;
-  }
- 
-
-
+       
   // initializing the I/O
   pinMode(trigPin, OUTPUT);       // Sets the trigPin as an Output
   pinMode(echoPin, INPUT);        // Sets the echoPin as an Input
@@ -945,76 +867,6 @@ void setup() {
   Wire.write(0);                    // set to zero (wakes up the MPU-6050)
   Wire.endTransmission(true);
 
-
-// create the thread of task os getting sensor data 
-  //create a task that will be executed in the Task2code() function, with priority 1 and executed on core 0
-  xTaskCreatePinnedToCore(
-     Task2code,    //Task function.
-     "SensorsDataTask", //name of task
-     10000, //Stack size of task
-     NULL, //parameter of the task
-     1, //priority of the task
-     &SensorsDataTask, //Task handle to keep track of created task
-     0); //pin task to core 0
-
- // rootPage.insert(Server);    // Instead of Server.on("/", ...);
-  //delPage.insert(Server);     // Instead of Server.on("/del", ...); ( have deleted this ) 
-
-    ////////////////////////  Using the Ethernet & Wifi Integration //////////
-      // delete old config
-  WiFi.disconnect(true);
-
-  // If we aren't using the SD card for passing the wifi credentials we use the credentials below
-  ////////////////////////// Wifi and SD card setup ////////////////
-  //WiFiSSID[] = "DBHome";      // hold wifi ssid read from SD card
-  //WiFiPASSWORD[] = "DB16091963";  // holds wifi password read from SSID card
-
-  // Examples of different ways to register wifi events
-  WiFi.onEvent(WiFiEvent);
-  WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
-  WiFiEventId_t eventID = WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info){
-    Serial.print("WiFi lost connection. Reason: ");
-    Serial.println(info.disconnected.reason);
-  }, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
-
-  // Remove WiFi event
-  Serial.print("WiFi Event ID: ");
-  Serial.println(eventID);
-  // WiFi.removeEvent(eventID);
-
-///////////////////////////////////////////////////// Access Point /////////////////
-
-  // Set an address of the credential area.
-  Serial.println("COnfiguration is starting" );
-  AutoConnectConfig Config;
-  Config.boundaryOffset = CREDENTIAL_OFFSET;
-   Serial.println("COnfiguration Portal is on the way" );
-  Portal.config(Config);
-
-  // Start
-  if (Portal.begin()) {
-    Serial.println("WiFi connected: " + WiFi.SSID());
-    Serial.println("WiFi connected: " + WiFi.localIP().toString());
-  }
-
-//////////////// MQTT Ubidots Initiaization //////////
-    client.setServer(mqttBroker, 1883);
-    Serial.println("MQTT Broker connected" );
-  client.setCallback(callback);  
-//////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////
-
-    //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
-  xTaskCreatePinnedToCore(
-     Task1code,    //Task function.
-     "DataToCloudTask", //name of task
-     10000, //Stack size of task
-     NULL, //parameter of the task
-     1, //priority of the task
-     &DataToCloudTask, //Task handle to keep track of created task
-     0); //pin task to core 0
-
-
        ///////////////////////////////////OLED_Starting ///////////////////////
   // Write Splash Screen
   display.init();
@@ -1032,7 +884,52 @@ void setup() {
   display.display();
   delay(1000);
 
+/////////////////////////////////////////////////Threads initializing
+  
+// create the thread of task os getting sensor data 
+  //create a task that will be executed in the Task2code() function, with priority 1 and executed on core 0
+  xTaskCreatePinnedToCore(
+     Task2code,    //Task function.
+     "SensorsDataTask", //name of task
+     10000, //Stack size of task
+     NULL, //parameter of the task
+     1, //priority of the task
+     &SensorsDataTask, //Task handle to keep track of created task
+     0); //pin task to core 0
+
+
   ////////////////////  Initialise WiFi////////////////////////////////////////////
+
+  rootPage.insert(Server);    // Instead of Server.on("/", ...);
+  //delPage.insert(Server);     // Instead of Server.on("/del", ...); ( have deleted this ) 
+
+  // Set an address of the credential area.
+  Serial.println("Configuration is starting" );
+  AutoConnectConfig Config;
+  Config.boundaryOffset = CREDENTIAL_OFFSET;
+   Serial.println("Configuration Portal is on the way" );
+  Portal.config(Config);
+
+  // Start
+  if (Portal.begin()) {
+    Serial.println("WiFi connected: " + WiFi.SSID());
+    Serial.println("WiFi connected: " + WiFi.localIP().toString());
+  }
+
+//////////////// MQTT Ubidots Initiaization //////////
+    client.setServer(mqttBroker, 1883);
+    Serial.println("MQTT Broker connected" );
+  client.setCallback(callback);  
+
+    //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
+  xTaskCreatePinnedToCore(
+     Task1code,    //Task function.
+     "DataToCloudTask", //name of task
+     10000, //Stack size of task
+     NULL, //parameter of the task
+     1, //priority of the task
+     &DataToCloudTask, //Task handle to keep track of created task
+     0); //pin task to core 0
 
 }
 
