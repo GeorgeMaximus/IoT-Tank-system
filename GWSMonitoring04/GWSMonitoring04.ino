@@ -113,6 +113,17 @@ float SiTemp;
 float SiHum;
 /////// Pressure Sensor value
 float pressureV;    // value from ADC
+
+
+
+/////// LED Setup //////////////////
+const int ledPin = 32; // Set the GPIO 32 as Led 
+
+
+/////// ADC for presssure sensor Setup //////////////////
+const int pressPin = 34; // pressure sensor pin GPIO 34 >> adc0
+
+
 ///////////////////////////////////////////////////////
 ///////////////////////////// OLED Variables and iniializing //////////////////////////////
 #include "SSD1306.h" // alias for `#include "SSD1306Wire.h"`
@@ -530,6 +541,7 @@ void ReadAllSensors(){    // Read all the sensors
   }
   
  //--------------Ultrasonic Sensor------------------
+ /*
    // Clears the trigPin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -540,7 +552,8 @@ void ReadAllSensors(){    // Read all the sensors
   // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = pulseIn(echoPin, HIGH);
   distance= duration*0.034/2;       // Calculating the distance
-  sensor1 = distance;
+  */
+  sensor1 = random(50);
   msgs_sensors ++ ;
          Serial.println("Sensors Read Done & No. of function loops = ");
     Serial.println(msgs_sensors);
